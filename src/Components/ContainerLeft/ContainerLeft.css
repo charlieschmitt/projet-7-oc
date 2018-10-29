@@ -1,0 +1,13 @@
+.container-left{
+    width: 50%;
+    margin: 1rem;
+}
+
+.container-left > .perche-picture > img{
+    width: 100%;
+    margin-bottom: .5rem;
+}
+
+.container-left > .google-maps{
+    margin-top: .5rem;
+}
