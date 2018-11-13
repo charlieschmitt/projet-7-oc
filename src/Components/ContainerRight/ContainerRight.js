@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 // Import css du composant ContainerRight
 import './ContainerRight.css';
@@ -7,14 +7,14 @@ import './ContainerRight.css';
 import Filter from '../Filter/Filter';
 import List from '../List/List';
 
-export default class ContainerRight extends Component {
-    render() {
-        return(
-            <div className="container-right">
-                <h1>Perch'Advisor</h1>
-                <Filter />
-                <List />
-            </div>
-        )
-    }
+const ContainerRight = () => {
+    return(
+        <div className="container-right">
+            <h1>Perch'Advisor</h1>
+            <Filter />
+            <List />
+        </div>
+    )
 }
+
+export default ContainerRight;

@@ -1,124 +1,104 @@
-import React, { Component, Fragment } from 'react';
-
+import React, { Component } from 'react';
 import Select from 'react-select';
-import { colourOptions } from '../data';
-import { Note } from '../styled-components';
+import makeAnimated from 'react-select/lib/animated';
 
 // Import css du composant Filter
 import './Filter.css';
 
-const Checkbox = props => <input type="checkbox" {...props} />;
+// Création des options du select
+const options = [
+  { value: 1, label: '1 étoile' },
+  { value: 2, label: '2 étoiles' },
+  { value: 3, label: '3 étoiles' },
+  { value: 4, label: '4 étoiles'},
+  { value : 5, label: '5 étoiles'}
+]
 
-type State = {
-  isClearable: boolean,
-  isDisabled: boolean,
-  isLoading: boolean,
-  isRtl: boolean,
-  isSearchable: boolean,
-};
+// Création des éléments de customisation du select
+const customStyles = {
 
-export default class Filter extends Component<*, State> {
-  state = {
-    isClearable: true,
-    isDisabled: false,
-    isLoading: false,
-    isRtl: false,
-    isSearchable: true,
-  };
+  // Premier élément du select
+  control: () => ({
+    display: 'flex',
+    backgroundColor: '#9A643D'
+  }),
 
-  toggleClearable = () =>
-    this.setState(state => ({ isClearable: !state.isClearable }));
-  toggleDisabled = () =>
-    this.setState(state => ({ isDisabled: !state.isDisabled }));
-  toggleLoading = () =>
-    this.setState(state => ({ isLoading: !state.isLoading }));
-  toggleRtl = () => this.setState(state => ({ isRtl: !state.isRtl }));
-  toggleSearchable = () =>
-    this.setState(state => ({ isSearchable: !state.isSearchable }));
-  render() {
-    const {
-      isClearable,
-      isSearchable,
-      isDisabled,
-      isLoading,
-      isRtl,
-    } = this.state;
-    return (
-      <Fragment>
-        <Select
-          className="basic-single"
-          classNamePrefix="select"
-          defaultValue={colourOptions[0]}
-          isDisabled={isDisabled}
-          isLoading={isLoading}
-          isClearable={isClearable}
-          isRtl={isRtl}
-          isSearchable={isSearchable}
-          name="color"
-          options={colourOptions}
-        />
-        <Note Tag="label">
-          <Checkbox
-            checked={isClearable}
-            onChange={this.toggleClearable}
-            id="cypress-single__clearable-checkbox"
-          />
-          Clearable
-        </Note>
-        <Note Tag="label" style={{ marginLeft: '1em' }}>
-          <Checkbox
-            checked={isSearchable}
-            onChange={this.toggleSearchable}
-            id="cypress-single__searchable-checkbox"
-          />
-          Searchable
-        </Note>
-        <Note Tag="label" style={{ marginLeft: '1em' }}>
-          <Checkbox
-            checked={isDisabled}
-            onChange={this.toggleDisabled}
-            id="cypress-single__disabled-checkbox"
-          />
-          Disabled
-        </Note>
-        <Note Tag="label" style={{ marginLeft: '1em' }}>
-          <Checkbox
-            checked={isLoading}
-            onChange={this.toggleLoading}
-            id="cypress-single__loading-checkbox"
-          />
-          Loading
-        </Note>
-        <Note Tag="label" style={{ marginLeft: '1em' }}>
-          <Checkbox
-            type="checkbox"
-            checked={isRtl}
-            onChange={this.toggleRtl}
-            id="cypress-single__rtl-checkbox"
-          />
-          RTL
-        </Note>
-      </Fragment>
-    );
-  }
+  // Couleur du placeholder
+  placeholder: () => ({
+    color: '#ffffff'
+  }),
+
+  // Container select
+  container: () => ({
+    border: '1px solid #9A643D'
+  }),
+  
+  // Options de la liste déroulante
+  option: (provided) => ({
+    ...provided,
+    backgroundColor: '#ffffff',
+    color: '#9A643D',
+    padding: 15
+  }),
+
+  // Arrière-plan menu
+  menu: () => ({
+    backgroundColor: '#fffffff'
+  }),
+  
+  // Valeur(s) sélectionnée(s) dans le select
+  multiValue: () => ({
+    backgroundColor: 'none', 
+    color: 'hsl(0,0%,80%)', 
+    display: 'flex', 
+    margin: '.5rem'
+  }),
+  
+  // Label des Valeurs sélectionnées dans le select
+  multiValueLabel: () => ({
+    backgroundColor: '#BC8258',
+    color: '#ffffff', 
+    padding: '.5rem'
+  }),
+
+  // Suppresion du label
+  multiValueRemove: () => ({
+      display: 'flex',
+      alignItems: 'center',
+      backgroundColor: '#BC8258',
+      ':hover': {
+      backgroundColor: '#523A28'
+      },
+      padding: '.5rem'
+  }),
+  
+  // Display none message 'Plus d'option(s)'
+  noOptionsMessage: () => ({
+    display: 'none'
+  })
+
 }
 
-{/*
-    export default class Filter extends Component {
+class Filter extends Component {
+  
+  render() {
+
+    return(
+      <div className="filter-restaurants">
+        <p>Quel type d'établissement recherchez-vous ?</p>
+        <Select 
+          styles={ customStyles }
+          closeMenuOnSelect={ false }
+          options={ options } 
+          components={ makeAnimated() }
+          isMulti={ true }
+          placeholder="Sélectionner le nombre d'étoiles"
+        />
+      </div>
+    )
+
+  }
     
-    render() {
-        return(
-            <div className="filter-restaurants">
-            <p>Quel type d'établissement recherchez-vous ?</p>
-            <select class="select-selected">
-            <option value="1">1 étoile</option>
-            <option value="2">2 étoiles</option>
-            <option value="3">3 étoiles</option>
-            <option value="4">4 étoiles</option>
-            <option value="5">5 étoiles</option>
-            </select>
-            </div>
-            )
-        }
-    }
-*/}
+}
+  
+export default Filter;

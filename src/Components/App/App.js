@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 // Import css du composant App
 import './App.css';
@@ -7,15 +7,13 @@ import './App.css';
 import ContainerLeft from '../ContainerLeft/ContainerLeft';
 import ContainerRight from '../ContainerRight/ContainerRight';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <ContainerLeft />
-        <ContainerRight />
-      </div>
-    )
-  }
+const App = () => {
+  return (
+    <div className="app">
+      <ContainerLeft />
+      <ContainerRight />
+    </div>
+  )
 }
 
 export default App;
