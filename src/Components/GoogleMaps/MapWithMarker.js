@@ -1,5 +1,6 @@
 import React from 'react';
-// Recompose permet de créer des HOC (high-order components)
+
+// Import librairies recompose, react-google-maps
 import { compose, withProps } from 'recompose';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 
@@ -8,20 +9,26 @@ const MapWithMarker = compose(
         // API google maps
         googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA",
         loadingElement: <div style={{ height: `100%` }} />,
-        containerElement: <div style={{ height: `400px` }} />,
+        containerElement: <div style={{ height: `100%` }} />,
         mapElement: <div style={{ height: `100%` }} />,
     }),
     withScriptjs,
     withGoogleMap
 )((props) => 
     <GoogleMap
-        // Props zoom par défaut
-        defaultZoom={ 12 }
-        // Props localisation actuelle
-        center={{ lat: props.currentLocation.lat, lng: props.currentLocation.lng }}
+        defaultZoom={ 11 }
+        center={{ lat: +props.currentLocation.lat[0], lng: +props.currentLocation.lng[0] }}
     >
-        { /* Props Marker selon la position */ }
-        { props.isMarkerShown && <Marker position={{ lat: props.currentLocation.lat, lng: props.currentLocation.lng }} onClick={ props.onMarkerClick } /> }
+        { 
+            props.isMarkerShown && 
+            [...Array(7)].map((x, i) =>
+                <Marker 
+                    key={ i }
+                    position={{ lat: props.currentLocation.lat[i], lng: props.currentLocation.lng[i] }} 
+                    onClick={ props.onMarkerClick }
+                />
+            )
+        }
     </GoogleMap>
 )
 

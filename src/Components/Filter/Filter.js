@@ -1,36 +1,65 @@
 import React, { Component } from 'react';
+
+// Import librairies react-select, styled-components
 import Select from 'react-select';
-import makeAnimated from 'react-select/lib/animated';
+import MakeAnimated from 'react-select/lib/animated';
+import styled from 'styled-components';
 
-// Import css du composant Filter
-import './Filter.css';
+// Import du composant RestaurantContainer
+//import RestaurantContainer from '../RestaurantContainer/RestaurantContainer';
 
-// Création des options du select
-const options = [
+const StyledFilter = styled.div`
+  margin-bottom: 2.5rem;
+
+  > div {
+    display: flex;
+
+    > * {
+      width: 40%;
+      margin-right: 2rem;
+    }
+
+  }
+
+  > p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .css-xp4uvy {
+    color: #ffffff;
+  }
+
+  .css-19bqh2r {
+    color: #ffffff;
+
+    &:hover {
+      color: #523A28;
+    }
+  }
+`
+// Création des options des select
+const OPTIONS = [
   { value: 1, label: '1 étoile' },
   { value: 2, label: '2 étoiles' },
   { value: 3, label: '3 étoiles' },
-  { value: 4, label: '4 étoiles'},
-  { value : 5, label: '5 étoiles'}
+  { value: 4, label: '4 étoiles' },
+  { value : 5, label: '5 étoiles' }
 ]
 
 // Création des éléments de customisation du select
-const customStyles = {
-
+const CUSTOM_STYLES = {
+  
   // Premier élément du select
   control: () => ({
     display: 'flex',
-    backgroundColor: '#9A643D'
+    backgroundColor: '#9A643D', 
+    cursor: 'pointer'
   }),
-
+  
   // Couleur du placeholder
   placeholder: () => ({
     color: '#ffffff'
-  }),
-
-  // Container select
-  container: () => ({
-    border: '1px solid #9A643D'
   }),
   
   // Options de la liste déroulante
@@ -38,65 +67,69 @@ const customStyles = {
     ...provided,
     backgroundColor: '#ffffff',
     color: '#9A643D',
-    padding: 15
-  }),
-
-  // Arrière-plan menu
-  menu: () => ({
-    backgroundColor: '#fffffff'
-  }),
-  
-  // Valeur(s) sélectionnée(s) dans le select
-  multiValue: () => ({
-    backgroundColor: 'none', 
-    color: 'hsl(0,0%,80%)', 
-    display: 'flex', 
-    margin: '.5rem'
-  }),
-  
-  // Label des Valeurs sélectionnées dans le select
-  multiValueLabel: () => ({
-    backgroundColor: '#BC8258',
-    color: '#ffffff', 
-    padding: '.5rem'
-  }),
-
-  // Suppresion du label
-  multiValueRemove: () => ({
-      display: 'flex',
-      alignItems: 'center',
-      backgroundColor: '#BC8258',
-      ':hover': {
-      backgroundColor: '#523A28'
-      },
-      padding: '.5rem'
-  }),
-  
-  // Display none message 'Plus d'option(s)'
-  noOptionsMessage: () => ({
-    display: 'none'
+    ':hover': {
+      color: '#523A28', 
+      fontWeight: 'bold',
+      fontSize: '1.1rem'
+    },
+    padding: '1rem'
   })
-
+  
 }
 
 class Filter extends Component {
   
+  constructor(props) {
+    super(props)
+    this.state = {
+      isClearable: true,
+      selectedOption: null
+    }
+  }
+
+  toggleClearable = () =>
+        this.setState(state => ({ isClearable: !state.isClearable }));
+
+    handleChangeOne = selectedOptionOne => {
+        this.setState({ selectedOptionOne });
+        console.log(selectedOptionOne.value)
+    }
+    
+    handleChangeTwo = selectedOptionTwo => {
+        this.setState({ selectedOptionTwo });
+        console.log(selectedOptionTwo.value)
+    }
+  
   render() {
+    
+    const { selectedOptionOne, selectedOptionTwo, isClearable } = this.state;
 
     return(
-      <div className="filter-restaurants">
+      <StyledFilter className="filter-restaurants">
         <p>Quel type d'établissement recherchez-vous ?</p>
-        <Select 
-          styles={ customStyles }
-          closeMenuOnSelect={ false }
-          options={ options } 
-          components={ makeAnimated() }
-          isMulti={ true }
-          placeholder="Sélectionner le nombre d'étoiles"
-        />
-      </div>
+        <div>
+          <Select 
+            styles={ CUSTOM_STYLES }
+            options={ OPTIONS } 
+            value={ selectedOptionOne }
+            components={ MakeAnimated() }
+            isClearable={ isClearable }
+            placeholder="Choisissez un nombre d'étoiles"
+            onChange={ this.handleChangeOne }
+          />
+          <Select 
+            styles={ CUSTOM_STYLES }
+            options={ OPTIONS } 
+            value={ selectedOptionTwo }
+            components={ MakeAnimated() }
+            isClearable={ isClearable }
+            placeholder="Choisissez un nombre d'étoiles"
+            onChange={ this.handleChangeTwo }
+          />
+        </div>
+      </StyledFilter>
     )
-
+      
   }
     
 }

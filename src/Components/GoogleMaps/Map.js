@@ -1,64 +1,68 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
+
+// Import librairie prop-types
+import PropTypes from 'prop-types';
+
+// Import du composant MapWithAMarker
 import MapWithAMarker from './MapWithMarker';
 
 class Map extends Component {
   
   constructor(props) {
     super(props)
-    // 
     this.state = {
-      // Données latitude - longitude
+      // Données latitude - longitude user et restaurants
       currentLating: {
-        lat: 0, 
-        lng: 0
+        lat: [], 
+        lng: []
       }, 
       // Marker map
       isMarkerShown: false
     }
   }
   
-  // Obtenir la position exacte du user sur la map
-  showCurrentLocation = () => {
+  // Obtenir la position exacte du user sur la map et concatenation des positions des restaurants
+  showCurrentAndRestaurantsLocation = () => {
     // API geolocalisation
     if(navigator.geolocation){
       // Récupérer les positions actuelles du user
       navigator.geolocation.getCurrentPosition(
         position => {
           // Mis à jour des positions
-          this.setState(prevState => ({
+          this.setState({
             currentLating: {
-            ...prevState.currentLating,
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+              lat: [position.coords.latitude].concat(this.props.latitude),
+              lng: [position.coords.longitude].concat(this.props.longitude)
             },
-            // Passage à true du marker
             isMarkerShown: true
-          }))
+          })
         }
       )
     }
   }
   
-  // Activation des positions avant que l'app se monte
   componentDidMount() {
-    this.showCurrentLocation()
+    this.showCurrentAndRestaurantsLocation()
   }
 
   render() {
 
+    const { isMarkerShown, currentLating } = this.state;
+
     return(
-      <Fragment>
-        <MapWithAMarker
-          // Props Marker
-          isMarkerShown={ this.state.isMarkerShown }
-          // Props Position
-          currentLocation={ this.state.currentLating }
-        />
-      </Fragment>
+      <MapWithAMarker
+        isMarkerShown={ isMarkerShown }
+        currentLocation={ currentLating }
+      />
     )
 
   }
 
+}
+
+Map.propTypes = {
+  latitude: PropTypes.arrayOf(PropTypes.number).isRequired, 
+  longitude: PropTypes.arrayOf(PropTypes.number).isRequired, 
 }
 
 export default Map;
