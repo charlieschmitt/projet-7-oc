@@ -17,8 +17,6 @@ class RestaurantContainer extends Component {
         super(props)
     }
 
-
-
     render () {
             
         return (
@@ -27,7 +25,6 @@ class RestaurantContainer extends Component {
                 <Filter />
                 <StyledListRestaurants className="list-restaurants">
                     { this.props.restaurantsList }
-                    { this.props.handleClickForm }
                 </StyledListRestaurants>
             </Fragment>
         )
