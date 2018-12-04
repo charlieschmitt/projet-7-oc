@@ -65,7 +65,7 @@ class App extends Component {
   // Requête GET pour aller chercher data JSON
     componentDidMount() {
     Axios
-      .get('http://localhost:3000/data/restaurant.json')
+      .get('http://localhost:3002/data/restaurant.json')
       .then(({ data }) => {
         this.setState({ 
             restaurants: data,
