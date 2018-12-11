@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 // Import composant RestaurantForm
-//import RestaurantForm from '../RestaurantForm/RestaurantForm';
+import RestaurantForm from '../RestaurantForm/RestaurantForm';
 
 // Import image
 import topDesign from '../../pictures/top-design.png';
@@ -99,9 +99,12 @@ filterStarsRestaurants() {
 
 /*
 const handleClickForm = () => (
-    { RestaurantForm }
+    //console.log({ RestaurantForm })
+    this.props.onAddResto()
 )
+*/
 
+/*
 RestaurantForm = (
     <p>test</p>
 )
@@ -134,7 +137,7 @@ const RestaurantItem = ({ restaurantName, address, streetViewImage, stars, comme
                 { comment }
             </p>
             <button 
-                //onClick={ handleClickForm }
+                onClick={ this.props.onAddView } 
             >
                 Ajouter un avis
             </button>

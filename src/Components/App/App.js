@@ -4,10 +4,9 @@ import React, { Component } from 'react';
 import Axios from 'axios';
 import styled from 'styled-components';
 
-// Import des composants Map , RestaurantContainer, Restaurantitem
+// Import des composants Map , RestaurantContainer
 import Map from '../GoogleMaps/Map';
 import RestaurantContainer from '../RestaurantContainer/RestaurantContainer';
-import RestaurantItem from '../RestaurantItem/RestaurantItem';
 
 // Import image
 import presentationImage from '../../pictures/bg-castle.jpg';
@@ -62,10 +61,10 @@ class App extends Component {
     };
   }
 
-  // Requête GET pour aller chercher data JSON
+    // Requête GET pour aller chercher data JSON
     componentDidMount() {
     Axios
-      .get('http://localhost:3002/data/restaurant.json')
+      .get('http://localhost:3000/data/restaurant.json')
       .then(({ data }) => {
         this.setState({ 
             restaurants: data,
@@ -80,21 +79,6 @@ class App extends Component {
 
     const restaurantsLatitude = restaurants.map(restaurant => restaurant.lat);
     const restaurantsLongitude = restaurants.map(restaurant => restaurant.lng);
-
-    const restaurantsList = restaurants.map(({ id, restaurantName, address, lat, lng, ratings }) => (
-        <RestaurantItem 
-            key={ id }
-            restaurantName={ restaurantName }
-            address={ address }
-            streetViewImage={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
-                               &fov=90&heading=235&pitch=10
-                               &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
-            //stars={ restaurant.ratings.map((rating) => console.log(rating)) }
-            stars={ ratings[0].stars }
-            commentTitle={ ratings[0].commentTitle }
-            comment={ ratings[0].comment }
-        />
-    ));
 
     return (
 
@@ -113,9 +97,7 @@ class App extends Component {
             </StyledContainerLeft>
 
             <StyledContainerRight className="container-right">
-                <RestaurantContainer 
-                    restaurantsList={ restaurantsList }
-                />
+                <RestaurantContainer />
             </StyledContainerRight>
 
         </StyledApp>
