@@ -1,12 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 // Import librairies react-stars, styled-components, prop-types
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-
-// Import composant RestaurantForm
-import RestaurantForm from '../RestaurantForm/RestaurantForm';
 
 // Import image
 import topDesign from '../../pictures/top-design.png';
@@ -25,7 +22,7 @@ const StyledRestaurantItem = styled.div`
     }
 `
 
- const StyledTopInformation = styled.div`
+const StyledTopInformation = styled.div`
     display: flex;
     margin-bottom: 2rem;
 
@@ -55,6 +52,7 @@ const StyledBottomInformation = styled.div`
         display: flex;
         flex-wrap: wrap;
         padding: 0 1.5rem;
+        margin-top: 1rem;
         width: calc(100% - 120px);
 
         > span {
@@ -86,64 +84,73 @@ const StyledBottomInformation = styled.div`
     }
 `
 
-const ratingChanged = (newrating) => {
-    console.log(newrating)
+class RestaurantItem extends Component {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            
+        }
+    }
+
+    // Gestion des stars
+    handleNewRating = newrating => {
+        console.log(newrating)
+    }
+    
+    
+    // Filtrage des stars
+    filterStarsRestaurants = () => {
+        // Créer une class Restaurant + une méthode permettant de filtrer les restaurants
+    }
+
+    render() { 
+
+        return(
+            <StyledRestaurantItem className="restaurant-item">
+
+                <div className="top-design--item">
+                    <img src={ topDesign } alt="Design de chaque item de restaurant" />
+                </div>
+
+                <StyledTopInformation className="top-information">
+                    <p className="restaurant-name">{ this.props.restaurantName }</p>
+                    <p className="restaurant-address">{ this.props.address }</p>
+                </StyledTopInformation>
+
+                <div className="restaurant-picture">
+                    <img src={ this.props.streetViewImage } alt="" />
+                </div>
+
+                <StyledBottomInformation className="bottom-information">
+                    <div className="stars-rating">
+                        <ReactStars
+                            count={ 5 }
+                            value={ this.props.stars }
+                            onChange={ this.handleNewRating }
+                            size={ 24 }
+                            color1={ '#EFEEE7' }
+                            color2={ '#ffd700' }
+                        />
+                    </div>
+                    <p className="commentary">
+                        <span><strong>{ this.props.commentTitle }</strong></span>
+                        { this.props.comment }
+                    </p>
+                    { this.props.viewUser() }
+                    <button 
+                        onClick={ () => this.props.onAddView() } 
+                    >
+                        Ajouter un avis
+                    </button>
+                </StyledBottomInformation>
+
+            </StyledRestaurantItem>
+        )
+
+    }
+
 }
-
-/*
-// Créer une class Restaurant + une méthode permettant de filtrer les restaurants
-filterStarsRestaurants() {
-
-}
-*/
-
-/*
-const handleClickForm = () => (
-    //console.log({ RestaurantForm })
-    this.props.onAddResto()
-)
-*/
-
-/*
-RestaurantForm = (
-    <p>test</p>
-)
-*/
-
-const RestaurantItem = ({ restaurantName, address, streetViewImage, stars, commentTitle, comment }) => (
-    <StyledRestaurantItem className="restaurant-item">
-        <div className="top-design--item">
-            <img src={ topDesign } alt="Design de chaque item de restaurant" />
-        </div>
-        <StyledTopInformation className="top-information">
-            <p className="restaurant-name">{ restaurantName }</p>
-            <p className="restaurant-address">{ address }</p>
-        </StyledTopInformation>
-        <div className="restaurant-picture">
-            <img src={ streetViewImage } alt="" />
-        </div>
-        <StyledBottomInformation className="bottom-information">
-            <div className="stars-rating">
-                <ReactStars
-                    count={ 5 }
-                    value={ stars }
-                    onChange={ ratingChanged }
-                    size={ 24 }
-                    color2={ '#ffd700' }
-                />
-            </div>
-            <p className="commentary">
-                <span><strong>{ commentTitle }</strong></span>
-                { comment }
-            </p>
-            <button 
-                onClick={ this.props.onAddView } 
-            >
-                Ajouter un avis
-            </button>
-        </StyledBottomInformation>
-    </StyledRestaurantItem>
-)
 
 RestaurantItem.propTypes = {
     restaurantName: PropTypes.string.isRequired, 
@@ -153,5 +160,5 @@ RestaurantItem.propTypes = {
     commentTitle: PropTypes.string.isRequired, 
     comment: PropTypes.string.isRequired
 }
-    
+
 export default RestaurantItem;
