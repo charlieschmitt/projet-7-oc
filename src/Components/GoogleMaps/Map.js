@@ -18,7 +18,6 @@ class Map extends Component {
         this.map = '';
         this.marker = '';
         this.newMarker = '';
-        //this.addMarker = this.addMarker.bind(this)
     }
 
     componentDidMount() {
@@ -58,14 +57,14 @@ class Map extends Component {
         this.map = new window.google.maps.Map(document.getElementById('map'), {
             center: { lat: +currentLating.lat[0], lng: +currentLating.lng[0] },
             zoom: 11
-        })
+        });
         
         // Création du marker => position user
         this.marker = new window.google.maps.Marker({
             position: { lat: +currentLating.lat[0], lng: +currentLating.lng[0] },
             map: this.map,
             icon: brownMarker
-        })
+        });
         
         // Mise en place des markers des restaurants
         this.props.restaurantsInfos.map(restaurant => {
@@ -73,55 +72,30 @@ class Map extends Component {
                 position: { lat: +restaurant.lat, lng: +restaurant.lng },
                 map: this.map,
                 icon: redMarker
-            })
+            });
         })
         
-        /*
-        this.map.addEventListener('click', function(e) {
-            console.log(e);
-            this.testMarker();
+        // Mise en place du click sur la map
+        this.map.addListener('click', e => {
+            this.props.onAddRestaurant()
+            this.addMarker(e.latLng);
         });
-        */
 
     }
     
-    componentDidUpdate() {
+    // Ajout d'un marker au click
+    addMarker = latLng => {
+        const { addMarker } = this.state;
 
-        let eventMap = document.getElementById('map');
-        
-        eventMap.addEventListener('click', e => {
-            //this.props.onAddRestaurant()
-            //this.placeMarker(e.latLng);
-            let testMap = new window.google.maps.LatLng()
-            console.log(testMap)
-        })
-        
-
-        /*
-        this.map.addListener('click', e => {
-            console.log(e.latLng)
-            this.addMarker(e.latLng)
-        })
-        */
-
-        
-    //}
-    
-
-    testMarker = () => {
-        alert()
-        /*
-        this.marker = new window.google.maps.Marker({
+        this.newMarker = new window.google.maps.Marker({
             map: this.map,
             position: latLng,
-            draggable: true
+            icon: redMarker
         });
-        */
-        /*
+
         this.setState({
-            addMarker: [...this.state.addMarker, this.marker]
-        })
-        */
+            addMarker: [...addMarker, this.newMarker]
+        });
     }
 
     render() {

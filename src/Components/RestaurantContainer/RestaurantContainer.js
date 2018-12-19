@@ -106,6 +106,7 @@ class RestaurantContainer extends Component {
     renderView = () => {
         const { newViews } = this.state;
         return newViews.map(({ id, stars, commentTitle, comment }) => {
+            //console.log(id)
             return (
                 <Fragment key={ id }>
                     <div className="stars-rating">
