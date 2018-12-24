@@ -97,12 +97,6 @@ class RestaurantItem extends Component {
     handleNewRating = newrating => {
         console.log(newrating)
     }
-    
-    
-    // Filtrage des stars
-    filterStarsRestaurants = () => {
-        // Créer une class Restaurant + une méthode permettant de filtrer les restaurants
-    }
 
     render() { 
 

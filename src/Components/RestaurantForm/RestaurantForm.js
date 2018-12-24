@@ -157,11 +157,12 @@ class RestaurantForm extends Component {
         })
     }
 
-    // Envoie des props via le formulaire
+    // Envoie des props via le formulaire et activation du marker
     handleSubmit = event => {
         event.preventDefault();
         const { name, address, stars, commentTitle, comment } = this.state;
         this.props.onAddRestaurant(name, address, stars, commentTitle, comment);
+        //this.props.setNewMarker();
     }
 
     render() {

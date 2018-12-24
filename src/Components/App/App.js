@@ -137,9 +137,11 @@ class App extends Component {
         super(props)
         this.state = {
             restaurants: [],
-            isAddRestaurant: false, 
+            isAddRestaurant: false,
             newRestaurants: []
         };
+        this.newLat = 0;
+        this.newLng = 0;
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.addRestaurant = this.addRestaurant.bind(this);
@@ -147,14 +149,14 @@ class App extends Component {
 
     // Requête GET pour aller chercher data JSON
     componentDidMount() {
-    Axios
-        .get('http://localhost:3000/data/restaurant.json')
-        .then(({ data }) => {
-            this.setState({ 
-                restaurants: data,
-            });
-        })
-        .catch( err => {} )
+        Axios
+            .get('http://localhost:3000/data/restaurant.json')
+            .then(({ data }) => {
+                this.setState({ 
+                    restaurants: data,
+                });
+            })
+            .catch( err => {} )
     }
     
     // Ouverture du formulaire
@@ -171,25 +173,44 @@ class App extends Component {
         })
     }
     
+    // Latitude et longitude du restaurant ajouté
+    addLatAndLng = (lat, lng) => {
+        this.newLat = lat;
+        this.newLng = lng;
+    }
+    
     // Ajout d'un restaurant par le user
     addRestaurant = (name, address, stars, commentTitle, comment) => {
         const { newRestaurants } = this.state;
         let tmpRestaurant = [];
         tmpRestaurant.name = name;
         tmpRestaurant.address = address;
+        tmpRestaurant.lat = this.newLat;
+        tmpRestaurant.lng = this.newLng;
         tmpRestaurant.stars = stars;
         tmpRestaurant.commentTitle = commentTitle;
         tmpRestaurant.comment = comment;
         this.setState({
             isAddRestaurant: false,
+            addRestaurantIsOk: false,
             newRestaurants : [...newRestaurants, tmpRestaurant]
         });
     }
+    
+    /*
+    // Ajout d'un marker au click
+    setNewMarker = (map, latLng) => {
+        this.newMarker = new window.google.maps.Marker({
+            map: map,
+            position: latLng
+        });
+    }
+    */
 
     // Rendu d'un retaurant ajouté par le user
     renderRestaurant = () => {
         const { newRestaurants } = this.state;
-        return newRestaurants.map(({ id, name, address, stars, commentTitle, comment }) => {
+        return newRestaurants.map(({ id, name, address, lat, lng, stars, commentTitle, comment }) => {
             return (
                 <StyledRestaurantItem 
                     className="restaurant-item"
@@ -206,7 +227,10 @@ class App extends Component {
                     </StyledTopInformation>
 
                     <div className="restaurant-picture">
-                        <img src="" alt="" />
+                        <img src={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
+                                    &fov=90&heading=235&pitch=10
+                                    &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
+                            alt="" />
                     </div>
                     
                     <StyledBottomInformation className="bottom-information">
@@ -247,7 +271,9 @@ class App extends Component {
                 <div className="map" id="map"> 
                     <Map
                         restaurantsInfos={ restaurantsJSON }
-                        onAddRestaurant={ this.openModal }
+                        onOpen={ this.openModal }
+                        //addMarker={ this.setNewMarker }
+                        latAndLngNewRestaurant={ this.addLatAndLng }
                     />
                 </div>
                 {
@@ -255,6 +281,7 @@ class App extends Component {
                     <RestaurantForm
                         onClose={ this.closeModal }
                         onAddRestaurant={ this.addRestaurant }
+                        //setNewMarker={ this.setNewMarker }
                     >
                     </RestaurantForm> 
                     : null

@@ -21,11 +21,11 @@ class Map extends Component {
     }
 
     componentDidMount() {
-        this.showCurrentAndRestaurantsLocation()
+        this.showCurrentLocation()
     }
 
-    // Obtenir la position exacte du user sur la map et concatenation des positions des restaurants
-    showCurrentAndRestaurantsLocation = () => {
+    // Obtention de la position exacte du user sur la map
+    showCurrentLocation = () => {
         // API geolocalisation
         if(navigator.geolocation){
             // Récupérer les positions actuelles du user
@@ -77,10 +77,21 @@ class Map extends Component {
         
         // Mise en place du click sur la map
         this.map.addListener('click', e => {
-            this.props.onAddRestaurant()
-            this.addMarker(e.latLng);
+            this.props.latAndLngNewRestaurant(e.latLng.lat(), e.latLng.lng());
+            this.props.onOpen();
+            this.addMarker(e.latLng)
+            //this.props.addMarker(this.map, e.latLng);
         });
 
+        // Ajout de nouveaux restaurants et de nouveaux avis
+        let service = new window.google.maps.places.PlacesService(this.map);
+        //Restaurant à 7 kilomètres autour de ma position
+        service.nearbySearch({
+            location: { lat: +currentLating.lat[0], lng: +currentLating.lng[0] },
+            radius: 10000,
+            type: ['restaurant']
+        }, /* googleMap.processResults */);
+        console.log(service)
     }
     
     // Ajout d'un marker au click

@@ -22,8 +22,11 @@ class RestaurantContainer extends Component {
         super(props)
         this.state = {
             restaurants: [],
+            newrating: null,
             isAddView: false,
-            newViews : []
+            newViews: [], 
+            minValue: 0,
+            maxValue: 0
         }
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
@@ -41,30 +44,27 @@ class RestaurantContainer extends Component {
             });
         })
         .catch( err => {} )
-
-        //this.hydrateStateWithSessionStorage();
     }
-    
-    /*
-    // Revoir tuto méthode
-    hydrateStateWithSessionStorage() {
-        for (let key in this.state) {
-          if (sessionStorage.hasOwnProperty(key)) {
-            let value = sessionStorage.getItem(key);
-            try {
-              value = JSON.parse(value);
-              this.setState({ [key]: value });
-            } catch (e) {
-              this.setState({ [key]: value });
-            }
-          }
-        }
-    }
-    */
 
     // Gestion des stars
     handleNewRating = newrating => {
-        console.log(newrating)
+        this.setState({
+            newrating
+        });
+    }
+
+    // Valeur du premier select
+    firstValueSelect = value => {
+        this.setState({
+            minValue: value
+        });
+    }
+
+    // Valeur du second select
+    secondValueSelect = value => {
+        this.setState({
+            maxValue: value
+        });
     }
     
     // Ouverture du formulaire
@@ -91,24 +91,16 @@ class RestaurantContainer extends Component {
         this.setState({
             isAddView : false, 
             newViews : [...newViews, tmpView]
-        }
-        /*
-        , 
-        () => {
-            sessionStorage.setItem("newViews", JSON.stringify(newViews));
-            sessionStorage.setItem("newView", "");
-        }
-        */
-        );
+        });
     }
     
     // Rendu d'un avis ajouté par le user
     renderView = () => {
         const { newViews } = this.state;
-        return newViews.map(({ id, stars, commentTitle, comment }) => {
+        return newViews.map(({ stars, commentTitle, comment }) => {
             //console.log(id)
             return (
-                <Fragment key={ id }>
+                <div key={ stars }>
                     <div className="stars-rating">
                         <ReactStars
                             count={ 5 }
@@ -123,16 +115,26 @@ class RestaurantContainer extends Component {
                         <span><strong>{ commentTitle }</strong></span>
                         { comment }
                     </p>
-                </Fragment>
+                </div>
             )
         });
     }
 
-    render () {
-        
+    // Filtrage des stars
+    intervalValue(number){
+        if((this.state.minValue <= number) && (this.state.maxValue >= number)){
+            return
+        }
+
+    }
+    
+    /*
+    restaurantsList = () => {
+
         const { restaurants } = this.state;
 
-        const restaurantsList = restaurants.map(({ id, restaurantName, address, lat, lng, ratings }) => (
+        restaurants.filter(this.intervalValue(ratings)).map(({ id, restaurantName, address, lat, lng, ratings }) => 
+
             <RestaurantItem 
                 key={ id }
                 restaurantName={ restaurantName }
@@ -145,13 +147,43 @@ class RestaurantContainer extends Component {
                 comment={ ratings[0].comment }
                 onAddView={ this.openModal }
                 viewUser={ this.renderView }
+            /> 
+        
+        );
+            
+    }
+    */
+
+    render () {
+        
+        const { restaurants, key } = this.state;
+
+        const restaurantsList = restaurants./*filter(this.intervalValue(ratings)).*/map(({ id, restaurantName, address, lat, lng, ratings }) => 
+            
+            <RestaurantItem 
+                key={ id }
+                id={ key }
+                restaurantName={ restaurantName }
+                address={ address }
+                streetViewImage={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
+                                   &fov=90&heading=235&pitch=10
+                                   &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
+                stars={ ratings[0].stars }
+                commentTitle={ ratings[0].commentTitle }
+                comment={ ratings[0].comment }
+                onAddView={ this.openModal }
+                viewUser={ this.renderView }
             />
-        )); 
+
+        ); 
 
         return (
             <Fragment>
                 <h1>Perch'Advisor</h1>
-                <Filter />
+                <Filter 
+                    firstSelect={ this.firstValueSelect }
+                    secondValue={ this.secondValueSelect }
+                />
                 <StyledListRestaurants className="list-restaurants">
                     { restaurantsList }
                     { this.props.restaurantUser() }

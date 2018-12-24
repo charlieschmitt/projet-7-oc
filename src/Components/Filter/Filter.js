@@ -12,30 +12,30 @@ const StyledFilter = styled.div`
     margin-bottom: 2.5rem;
 
     > div {
-      display: flex;
+        display: flex;
 
-      > * {
-        width: 40%;
-        margin-right: 2rem;
-      }
+        > * {
+            width: 40%;
+            margin-right: 2rem;
+        }
 
     }
 
     > p {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .css-xp4uvy {
-      color: #ffffff;
+        color: #ffffff;
     }
 
     .css-19bqh2r {
-      color: #ffffff;
+        color: #ffffff;
 
-      &:hover {
-        color: #523A28;
-      }
+        &:hover {
+            color: #523A28;
+        }
     }
 `
 // Création des options des select
@@ -52,27 +52,27 @@ const CUSTOM_STYLES = {
   
     // Premier élément du select
     control: () => ({
-      display: 'flex',
-      backgroundColor: '#9A643D', 
-      cursor: 'pointer'
+        display: 'flex',
+        backgroundColor: '#9A643D', 
+        cursor: 'pointer'
     }),
     
     // Couleur du placeholder
     placeholder: () => ({
-      color: '#ffffff'
+        color: '#ffffff'
     }),
     
     // Options de la liste déroulante
     option: (provided) => ({
-      ...provided,
-      backgroundColor: '#ffffff',
-      color: '#9A643D',
-      ':hover': {
-        color: '#523A28', 
-        fontWeight: 'bold',
-        fontSize: '1.1rem'
-      },
-      padding: '1rem'
+        ...provided,
+        backgroundColor: '#ffffff',
+        color: '#9A643D',
+        ':hover': {
+            color: '#523A28', 
+            fontWeight: 'bold',
+            fontSize: '1.1rem'
+        },
+        padding: '1rem'
     })
   
 }
@@ -80,27 +80,38 @@ const CUSTOM_STYLES = {
 class Filter extends Component {
   
     constructor(props) {
-      super(props)
-      this.state = {
-        isClearable: true,
-        selectedOption: null
-      }
+        super(props)
+        this.state = {
+            isClearable: true,
+            selectedOptionOne: null, 
+            selectedOptionTwo: null
+        }
     }
   
     // Ouverture/fermeture du select
     toggleClearable = () =>
-          this.setState(state => ({ isClearable: !state.isClearable }));
+        this.setState(state => ({ isClearable: !state.isClearable }));
 
     // Manipulation du premier select
     handleChangeOne = selectedOptionOne => {
-        this.setState({ selectedOptionOne });
-        console.log(selectedOptionOne.value)
+        this.setState({ 
+            selectedOptionOne
+        },
+            () => this.props.firstSelect(selectedOptionOne.value) 
+        );
+
+        //console.log(selectedOptionOne)
     }
     
     // Manipulation du deuxième select
     handleChangeTwo = selectedOptionTwo => {
-        this.setState({ selectedOptionTwo });
-        console.log(selectedOptionTwo.value)
+        this.setState({ 
+            selectedOptionTwo
+        }, 
+            () => this.props.secondSelect(selectedOptionTwo.value) 
+        );
+
+        //console.log(selectedOptionTwo.value)
     }
   
   render() {
@@ -113,23 +124,23 @@ class Filter extends Component {
           <div>
 
             <Select 
-              styles={ CUSTOM_STYLES }
-              options={ OPTIONS } 
-              value={ selectedOptionOne }
-              components={ MakeAnimated() }
-              isClearable={ isClearable }
-              placeholder="Choisissez un nombre d'étoiles"
-              onChange={ this.handleChangeOne }
+                styles={ CUSTOM_STYLES }
+                options={ OPTIONS } 
+                value={ selectedOptionOne }
+                components={ MakeAnimated() }
+                isClearable={ isClearable }
+                placeholder="Choisissez un nombre d'étoiles"
+                onChange={ this.handleChangeOne }
             />
 
             <Select 
-              styles={ CUSTOM_STYLES }
-              options={ OPTIONS } 
-              value={ selectedOptionTwo }
-              components={ MakeAnimated() }
-              isClearable={ isClearable }
-              placeholder="Choisissez un nombre d'étoiles"
-              onChange={ this.handleChangeTwo }
+                styles={ CUSTOM_STYLES }
+                options={ OPTIONS } 
+                value={ selectedOptionTwo }
+                components={ MakeAnimated() }
+                isClearable={ isClearable }
+                placeholder="Choisissez un nombre d'étoiles"
+                onChange={ this.handleChangeTwo }
             />
             
           </div>

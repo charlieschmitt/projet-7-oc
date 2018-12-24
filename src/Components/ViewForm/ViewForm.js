@@ -125,6 +125,7 @@ class ViewForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            id: 0,
             stars: 0,
             commentTitle: '',
             comment: ''
@@ -154,8 +155,8 @@ class ViewForm extends Component {
     // Envoie des props via le formulaire
     handleSubmit = event => {
         event.preventDefault();
-        const { stars, commentTitle, comment } = this.state;
-        this.props.addView(stars, commentTitle, comment);
+        const { id, stars, commentTitle, comment } = this.state;
+        this.props.addView(id, stars, commentTitle, comment);
     }
 
     render() {
