@@ -138,13 +138,16 @@ class App extends Component {
         this.state = {
             restaurants: [],
             isAddRestaurant: false,
-            newRestaurants: []
+            newRestaurants: [],
+            dataNewLat: 0,
+            dataNewLng: 0,
+            dataMap: '',
+            dataLatLng: ''
         };
-        this.newLat = 0;
-        this.newLng = 0;
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.addRestaurant = this.addRestaurant.bind(this);
+        this.infosMarker = this.infosMarker.bind(this);
     }
 
     // Requête GET pour aller chercher data JSON
@@ -163,30 +166,32 @@ class App extends Component {
     openModal = () => {
         this.setState({
             isAddRestaurant: true
-        })
+        });
     }
     
     // Fermeture du formulaire
     closeModal = () => {
         this.setState({
             isAddRestaurant: false
-        })
+        });
     }
     
     // Latitude et longitude du restaurant ajouté
-    addLatAndLng = (lat, lng) => {
-        this.newLat = lat;
-        this.newLng = lng;
+    addLatLng = (lat, lng) => {
+        this.setState({
+            dataNewLat: lat,
+            dataNewLng: lng
+        });
     }
     
     // Ajout d'un restaurant par le user
     addRestaurant = (name, address, stars, commentTitle, comment) => {
-        const { newRestaurants } = this.state;
+        const { newRestaurants, dataNewLat, dataNewLng} = this.state;
         let tmpRestaurant = [];
         tmpRestaurant.name = name;
         tmpRestaurant.address = address;
-        tmpRestaurant.lat = this.newLat;
-        tmpRestaurant.lng = this.newLng;
+        tmpRestaurant.lat = dataNewLat;
+        tmpRestaurant.lng = dataNewLng;
         tmpRestaurant.stars = stars;
         tmpRestaurant.commentTitle = commentTitle;
         tmpRestaurant.comment = comment;
@@ -197,17 +202,16 @@ class App extends Component {
         });
     }
     
-    /*
-    // Ajout d'un marker au click
-    setNewMarker = (map, latLng) => {
-        this.newMarker = new window.google.maps.Marker({
-            map: map,
-            position: latLng
+    
+    // Obtention des infos concernant le marker à ajouter
+    infosMarker = (map, latLng) => {
+        this.setState({
+            dataMap: map,
+            dataLatLng: latLng
         });
     }
-    */
 
-    // Rendu d'un retaurant ajouté par le user
+    // Rendu d'un restaurant ajouté par le user
     renderRestaurant = () => {
         const { newRestaurants } = this.state;
         return newRestaurants.map(({ id, name, address, lat, lng, stars, commentTitle, comment }) => {
@@ -257,7 +261,7 @@ class App extends Component {
 
   render () {
 
-    const { restaurants, isAddRestaurant } = this.state;
+    const { restaurants, isAddRestaurant, dataMap, dataLatLng } = this.state;
 
     const restaurantsJSON = restaurants.map(restaurant => restaurant);
 
@@ -272,8 +276,8 @@ class App extends Component {
                     <Map
                         restaurantsInfos={ restaurantsJSON }
                         onOpen={ this.openModal }
-                        //addMarker={ this.setNewMarker }
-                        latAndLngNewRestaurant={ this.addLatAndLng }
+                        getMarker={ this.infosMarker }
+                        getLatLngNewRestaurant={ this.addLatLng }
                     />
                 </div>
                 {
@@ -281,7 +285,8 @@ class App extends Component {
                     <RestaurantForm
                         onClose={ this.closeModal }
                         onAddRestaurant={ this.addRestaurant }
-                        //setNewMarker={ this.setNewMarker }
+                        dataMapNewMarker={ dataMap }
+                        dataLatLngNewMarker={ dataLatLng }
                     >
                     </RestaurantForm> 
                     : null
@@ -290,7 +295,7 @@ class App extends Component {
 
             <StyledContainerRight className="container-right">
                 <RestaurantContainer 
-                    restaurantUser={ this.renderRestaurant }
+                    restaurantAddedByUser={ this.renderRestaurant }
                 />
             </StyledContainerRight>
 

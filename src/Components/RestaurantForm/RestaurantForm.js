@@ -5,6 +5,9 @@ import ReactStars from 'react-stars';
 import styled from 'styled-components';
 //import PropTypes from 'prop-types';
 
+// Import image
+import redMarker from '../../pictures/red-marker.png';
+
 const StyledBgForm = styled.div`
     width: 100%;
     height: 100%;
@@ -147,22 +150,31 @@ class RestaurantForm extends Component {
         const name =  target.name;
         this.setState({
             [name] : value
-        })
+        });
     }
     
     // Gestion des stars
     handleNewRating = newrating => {
         this.setState({
             stars: newrating
-        })
+        });
     }
 
     // Envoie des props via le formulaire et activation du marker
     handleSubmit = event => {
-        event.preventDefault();
         const { name, address, stars, commentTitle, comment } = this.state;
+        event.preventDefault();
         this.props.onAddRestaurant(name, address, stars, commentTitle, comment);
-        //this.props.setNewMarker();
+        this.newMarker(this.props.dataMapNewMarker, this.props.dataLatLngNewMarker); 
+    }
+
+    // Ajout d'un marker au click
+    newMarker = (map, latLng) => {
+        this.newMarker = new window.google.maps.Marker({
+            map: map,
+            position: latLng,
+            icon: redMarker
+        });
     }
 
     render() {

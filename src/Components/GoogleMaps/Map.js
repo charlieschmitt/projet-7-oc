@@ -13,10 +13,11 @@ class Map extends Component {
                 lat: [], 
                 lng: []
             },
-            addMarker: []
+            allMarker: ''
         }
         this.map = '';
         this.marker = '';
+        this.service = '';
         this.newMarker = '';
     }
 
@@ -45,7 +46,7 @@ class Map extends Component {
     
     // Rendu de la map
     renderMap = () => {
-        loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA&callback=initMap")
+        loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA&callback=initMap&libraries=places")
         window.initMap = this.initMap
     }
     
@@ -77,26 +78,42 @@ class Map extends Component {
         
         // Mise en place du click sur la map
         this.map.addListener('click', e => {
-            this.props.latAndLngNewRestaurant(e.latLng.lat(), e.latLng.lng());
+            this.props.getLatLngNewRestaurant(e.latLng.lat(), e.latLng.lng());
             this.props.onOpen();
-            this.addMarker(e.latLng)
-            //this.props.addMarker(this.map, e.latLng);
+            this.props.getMarker(this.map, e.latLng);
         });
 
         // Ajout de nouveaux restaurants et de nouveaux avis
-        let service = new window.google.maps.places.PlacesService(this.map);
-        //Restaurant à 7 kilomètres autour de ma position
-        service.nearbySearch({
+        this.service = new window.google.maps.places.PlacesService(this.map);
+        // Restaurant(s) à 5 kilomètres autour de ma position
+        this.service.nearbySearch({
             location: { lat: +currentLating.lat[0], lng: +currentLating.lng[0] },
             radius: 10000,
             type: ['restaurant']
-        }, /* googleMap.processResults */);
-        console.log(service)
+        }, this.callback);
+        
+    }
+    
+    // Envoie des restaurants à partir d'une zone de recherche
+    callback = (results, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            for (let i = 0; i < results.length; i++) {
+                //console.log(results[i]);
+                let place = results[i].geometry.location;
+                this.addMarker(place);
+                /*
+                console.log(this.service.getDetails({
+                    placeId: results[i].place_id,
+                    fields: ['name', 'vicinity', 'photos']
+                }))
+                */
+            }
+        }
     }
     
     // Ajout d'un marker au click
     addMarker = latLng => {
-        const { addMarker } = this.state;
+        const { allMarker } = this.state;
 
         this.newMarker = new window.google.maps.Marker({
             map: this.map,
@@ -105,7 +122,7 @@ class Map extends Component {
         });
 
         this.setState({
-            addMarker: [...addMarker, this.newMarker]
+            allMarker: [...allMarker, this.newMarker]
         });
     }
 

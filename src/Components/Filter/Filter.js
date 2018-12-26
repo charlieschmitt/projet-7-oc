@@ -5,9 +5,6 @@ import Select from 'react-select';
 import MakeAnimated from 'react-select/lib/animated';
 import styled from 'styled-components';
 
-// Import du composant RestaurantContainer
-// import RestaurantContainer from '../RestaurantContainer/RestaurantContainer';
-
 const StyledFilter = styled.div`
     margin-bottom: 2.5rem;
 
@@ -38,6 +35,7 @@ const StyledFilter = styled.div`
         }
     }
 `
+
 // Création des options des select
 const OPTIONS = [
     { value: 1, label: '1 étoile' },
@@ -99,8 +97,6 @@ class Filter extends Component {
         },
             () => this.props.firstSelect(selectedOptionOne.value) 
         );
-
-        //console.log(selectedOptionOne)
     }
     
     // Manipulation du deuxième select
@@ -110,8 +106,6 @@ class Filter extends Component {
         }, 
             () => this.props.secondSelect(selectedOptionTwo.value) 
         );
-
-        //console.log(selectedOptionTwo.value)
     }
   
   render() {

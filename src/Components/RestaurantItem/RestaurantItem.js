@@ -131,9 +131,9 @@ class RestaurantItem extends Component {
                         <span><strong>{ this.props.commentTitle }</strong></span>
                         { this.props.comment }
                     </p>
-                    { this.props.viewUser() }
+                    { this.props.viewAddedByUser() }
                     <button 
-                        onClick={ () => this.props.onAddView() } 
+                        onClick={ () => this.props.onOpen() } 
                     >
                         Ajouter un avis
                     </button>

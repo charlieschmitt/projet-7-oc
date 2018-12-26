@@ -142,21 +142,21 @@ class ViewForm extends Component {
         const name =  target.name;
         this.setState({
             [name] : value
-        })
+        });
     }
     
     // Gestion des stars
     handleNewRating = newrating => {
         this.setState({
             stars: newrating
-        })
+        });
     }
     
     // Envoie des props via le formulaire
     handleSubmit = event => {
         event.preventDefault();
         const { id, stars, commentTitle, comment } = this.state;
-        this.props.addView(id, stars, commentTitle, comment);
+        this.props.onAddView(id, stars, commentTitle, comment);
     }
 
     render() {

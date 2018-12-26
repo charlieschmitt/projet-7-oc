@@ -71,14 +71,14 @@ class RestaurantContainer extends Component {
     openModal = () => {
         this.setState({
             isAddView: true
-        })
+        });
     }
     
     // Fermeture du formulaire
     closeModal = () => {
         this.setState({
             isAddView: false
-        })
+        });
     }
 
     // Ajout d'un avis par le user
@@ -171,8 +171,9 @@ class RestaurantContainer extends Component {
                 stars={ ratings[0].stars }
                 commentTitle={ ratings[0].commentTitle }
                 comment={ ratings[0].comment }
-                onAddView={ this.openModal }
-                viewUser={ this.renderView }
+                onOpen={ this.openModal }
+                restaurantAddedByUser
+                viewAddedByUser={ this.renderView }
             />
 
         ); 
@@ -186,12 +187,12 @@ class RestaurantContainer extends Component {
                 />
                 <StyledListRestaurants className="list-restaurants">
                     { restaurantsList }
-                    { this.props.restaurantUser() }
+                    { this.props.restaurantAddedByUser() }
                     { 
                         this.state.isAddView ?
                         <ViewForm 
                             onClose={ this.closeModal }
-                            addView={ this.addView } 
+                            onAddView={ this.addView } 
                         />
                         : null 
                     }
