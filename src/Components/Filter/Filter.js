@@ -95,7 +95,7 @@ class Filter extends Component {
         this.setState({ 
             selectedOptionOne
         },
-            () => this.props.firstSelect(selectedOptionOne.value) 
+            () => this.props.minSelect(selectedOptionOne.value) 
         );
     }
     
@@ -104,7 +104,7 @@ class Filter extends Component {
         this.setState({ 
             selectedOptionTwo
         }, 
-            () => this.props.secondSelect(selectedOptionTwo.value) 
+            () => this.props.maxSelect(selectedOptionTwo.value) 
         );
     }
   
@@ -124,6 +124,7 @@ class Filter extends Component {
                 components={ MakeAnimated() }
                 isClearable={ isClearable }
                 placeholder="Choisissez un nombre d'étoiles"
+                defaultValue={ 1 }
                 onChange={ this.handleChangeOne }
             />
 
@@ -134,6 +135,7 @@ class Filter extends Component {
                 components={ MakeAnimated() }
                 isClearable={ isClearable }
                 placeholder="Choisissez un nombre d'étoiles"
+                defaultValue={ 5 }
                 onChange={ this.handleChangeTwo }
             />
             

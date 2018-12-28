@@ -120,7 +120,7 @@ const StyledViewForm = styled.form`
     }
 `
 
-class ViewForm extends Component {
+class ReviewForm extends Component {
     
     constructor(props) {
         super(props)
@@ -156,7 +156,7 @@ class ViewForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
         const { id, stars, commentTitle, comment } = this.state;
-        this.props.onAddView(id, stars, commentTitle, comment);
+        this.props.onAddReview(id, stars, commentTitle, comment);
     }
 
     render() {
@@ -176,6 +176,7 @@ class ViewForm extends Component {
                         size={ 24 }
                         color1={ '#EFEEE7' }
                         color2={ '#ffd700' }
+                        half={ false }
                     />
                     <input 
                         type="text" 
@@ -204,4 +205,4 @@ class ViewForm extends Component {
 
 }
 
-export default ViewForm;
+export default ReviewForm;

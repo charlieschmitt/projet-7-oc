@@ -67,18 +67,9 @@ class Map extends Component {
             icon: brownMarker
         });
         
-        // Mise en place des markers des restaurants
-        this.props.restaurantsInfos.map(restaurant => {
-            this.marker = new window.google.maps.Marker({
-                position: { lat: +restaurant.lat, lng: +restaurant.lng },
-                map: this.map,
-                icon: redMarker
-            });
-        })
-        
         // Mise en place du click sur la map
         this.map.addListener('click', e => {
-            this.props.getLatLngNewRestaurant(e.latLng.lat(), e.latLng.lng());
+            this.props.getLatLng(e.latLng.lat(), e.latLng.lng());
             this.props.onOpen();
             this.props.getMarker(this.map, e.latLng);
         });
@@ -88,26 +79,18 @@ class Map extends Component {
         // Restaurant(s) à 5 kilomètres autour de ma position
         this.service.nearbySearch({
             location: { lat: +currentLating.lat[0], lng: +currentLating.lng[0] },
-            radius: 10000,
+            radius: 3000,
             type: ['restaurant']
         }, this.callback);
-        
     }
     
     // Envoie des restaurants à partir d'une zone de recherche
     callback = (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             for (let i = 0; i < results.length; i++) {
-                //console.log(results[i]);
-                let place = results[i].geometry.location;
-                this.addMarker(place);
-                /*
-                console.log(this.service.getDetails({
-                    placeId: results[i].place_id,
-                    fields: ['name', 'vicinity', 'photos']
-                }))
-                */
+                this.addMarker(results[i].geometry.location);
             }
+            this.addRestaurants(results);
         }
     }
     
@@ -126,6 +109,17 @@ class Map extends Component {
         });
     }
 
+    addRestaurants = results => {
+        for(let i = 0; i < results.length; i++){
+            this.service.getDetails(results[i], (result, status) => {
+                if(status === window.google.maps.places.PlacesServiceStatus.OK) {
+                    this.props.getLatLng(result.geometry.location.lat(), result.geometry.location.lng());
+                    this.props.getRestaurantsGooglePlaces(i, result.name, result.vicinity, result.reviews);
+                }
+            });
+        }
+    }
+
     render() {
         
         return (
@@ -138,12 +132,12 @@ class Map extends Component {
 }
 
 function loadScript(url) {
-    let index = window.document.getElementsByTagName('script')[0]
-    let script = window.document.createElement('script')
-    script.src = url
-    script.async = true
-    script.defer = true
-    index.parentNode.insertBefore(script, index)
+    let index = window.document.getElementsByTagName('script')[0];
+    let script = window.document.createElement('script');
+    script.src = url;
+    script.async = true;
+    script.defer = true;
+    index.parentNode.insertBefore(script, index);
 }
 
 export default Map;

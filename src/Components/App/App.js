@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-// Import librairies axios, react-stars,, styled-components
-import Axios from 'axios';
+// Import librairies react-stars,, styled-components
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
 
@@ -136,30 +135,20 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            restaurants: [],
             isAddRestaurant: false,
+            isAddRestaurantByUser: false,
             newRestaurants: [],
             dataNewLat: 0,
             dataNewLng: 0,
             dataMap: '',
-            dataLatLng: ''
+            dataLatLng: '',
+            dataMinSelect: 1, 
+            dataMaxSelect: 5
         };
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
-        this.addRestaurant = this.addRestaurant.bind(this);
+        this.addRestaurantByForm = this.addRestaurantByForm.bind(this);
         this.infosMarker = this.infosMarker.bind(this);
-    }
-
-    // Requête GET pour aller chercher data JSON
-    componentDidMount() {
-        Axios
-            .get('http://localhost:3000/data/restaurant.json')
-            .then(({ data }) => {
-                this.setState({ 
-                    restaurants: data,
-                });
-            })
-            .catch( err => {} )
     }
     
     // Ouverture du formulaire
@@ -176,32 +165,48 @@ class App extends Component {
         });
     }
     
-    // Latitude et longitude du restaurant ajouté
-    addLatLng = (lat, lng) => {
+    // Manipulation / mis à jour de la latitude et la longitude des restaurants googlePlaces et restaurantForm
+    handleLatLng = (lat, lng) => {
         this.setState({
             dataNewLat: lat,
             dataNewLng: lng
         });
     }
     
+    // Restaurants ajoutés via Google Places
+    addRestaurantByGooglePlaces = (index, name, address, reviews) => {
+        const { newRestaurants, dataNewLat, dataNewLng} = this.state;
+        let tmpRestaurant = [];
+        tmpRestaurant.index = index;
+        tmpRestaurant.name = name;
+        tmpRestaurant.address = address;
+        tmpRestaurant.lat = dataNewLat;
+        tmpRestaurant.lng = dataNewLng;
+        tmpRestaurant.reviews = reviews;
+        this.setState({
+            newRestaurants : [...newRestaurants, tmpRestaurant]
+        });
+    }
+    
     // Ajout d'un restaurant par le user
-    addRestaurant = (name, address, stars, commentTitle, comment) => {
+    addRestaurantByForm = (name, address, stars, commentTitle, comment) => {
         const { newRestaurants, dataNewLat, dataNewLng} = this.state;
         let tmpRestaurant = [];
         tmpRestaurant.name = name;
         tmpRestaurant.address = address;
         tmpRestaurant.lat = dataNewLat;
         tmpRestaurant.lng = dataNewLng;
+        //let reviews = [rating, author_name, text];
+        //tmpRestaurant.reviews = reviews;
         tmpRestaurant.stars = stars;
         tmpRestaurant.commentTitle = commentTitle;
         tmpRestaurant.comment = comment;
         this.setState({
             isAddRestaurant: false,
-            addRestaurantIsOk: false,
+            isAddRestaurantByUser: true,
             newRestaurants : [...newRestaurants, tmpRestaurant]
         });
     }
-    
     
     // Obtention des infos concernant le marker à ajouter
     infosMarker = (map, latLng) => {
@@ -211,59 +216,91 @@ class App extends Component {
         });
     }
 
-    // Rendu d'un restaurant ajouté par le user
-    renderRestaurant = () => {
-        const { newRestaurants } = this.state;
-        return newRestaurants.map(({ id, name, address, lat, lng, stars, commentTitle, comment }) => {
-            return (
-                <StyledRestaurantItem 
-                    className="restaurant-item"
-                    key={ id }
-                >
+    handleMinMaxValueSelect = (minValue, maxValue) => {
+        this.setState({
+            dataMinSelect: minValue, 
+            dataMaxSelect: maxValue
+        }, () => console.log(this.state.dataMinSelect, this.state.dataMaxSelect));
+    }
 
-                    <div className="top-design--item">
-                        <img src={ topDesign } alt="Design de chaque item de restaurant" />
-                    </div>
+    render () {
 
-                    <StyledTopInformation className="top-information">
-                        <p className="restaurant-name">{ name }</p>
-                        <p className="restaurant-address">{ address }</p>
-                    </StyledTopInformation>
+    const { newRestaurants, isAddRestaurant, isAddRestaurantByUser, dataMap, dataLatLng } = this.state;
 
-                    <div className="restaurant-picture">
-                        <img src={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
-                                    &fov=90&heading=235&pitch=10
-                                    &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
-                            alt="" />
-                    </div>
-                    
+    const renderNewRestaurants = newRestaurants.map(({index, name, address, lat, lng, reviews, stars, commentTitle, comment}) => {
+            return <StyledRestaurantItem 
+                className="restaurant-item"
+                key={ index }
+            >
+
+                <div className="top-design--item">
+                    <img src={ topDesign } alt="Design de chaque item de restaurant" />
+                </div>
+
+                <StyledTopInformation className="top-information">
+                    <p className="restaurant-name">{ name }</p>
+                    <p className="restaurant-address">{ address }</p>
+                </StyledTopInformation>
+
+                <div className="restaurant-picture">
+                    <img src={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
+                                &fov=90&heading=235&pitch=10
+                                &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
+                        alt="" />
+                </div>
+
+                {
+                    reviews === undefined 
+                    ? null
+                    : 
+                    reviews.slice(0, 2).map(review => review.rating < this.state.dataMinSelect || review.rating > this.state.dataMaxSelect
+                        ? null
+                        :
+                        <StyledBottomInformation className="bottom-information">
+                            <div className="stars-rating">
+                                <ReactStars
+                                    count={ 5 }
+                                    value={ review.rating }
+                                    size={ 24 }
+                                    color1={ '#EFEEE7' }
+                                    color2={ '#ffd700' }
+                                    half={ false }
+                                    edit={ false }
+                                />
+                            </div>
+                            <p className="commentary">
+                                <span><strong>{ review.author_name }</strong></span>
+                                { review.text }
+                            </p>
+                        </StyledBottomInformation>
+                    )
+                }
+                
+                {/*
+                    isAddRestaurantByUser
+                    ? 
                     <StyledBottomInformation className="bottom-information">
                         <div className="stars-rating">
                             <ReactStars
                                 count={ 5 }
                                 value={ stars }
-                                onChange={ this.handleNewRating }
                                 size={ 24 }
                                 color1={ '#EFEEE7' }
                                 color2={ '#ffd700' }
+                                half={ false }
+                                edit={ false }
                             />
                         </div>
                         <p className="commentary">
                             <span><strong>{ commentTitle }</strong></span>
                             { comment }
-                        </p>
+                         </p>
                     </StyledBottomInformation>
-                    
-                </StyledRestaurantItem>
-            )
-        });
-    }
-
-  render () {
-
-    const { restaurants, isAddRestaurant, dataMap, dataLatLng } = this.state;
-
-    const restaurantsJSON = restaurants.map(restaurant => restaurant);
+                    : null
+                */}
+                
+            </StyledRestaurantItem>
+    });
 
     return (
         <StyledApp className="app">
@@ -274,17 +311,17 @@ class App extends Component {
                 </div>
                 <div className="map" id="map"> 
                     <Map
-                        restaurantsInfos={ restaurantsJSON }
                         onOpen={ this.openModal }
                         getMarker={ this.infosMarker }
-                        getLatLngNewRestaurant={ this.addLatLng }
+                        getLatLng={ this.handleLatLng }
+                        getRestaurantsGooglePlaces={ this.addRestaurantByGooglePlaces }
                     />
                 </div>
                 {
                     isAddRestaurant ? 
                     <RestaurantForm
                         onClose={ this.closeModal }
-                        onAddRestaurant={ this.addRestaurant }
+                        onAddRestaurant={ this.addRestaurantByForm }
                         dataMapNewMarker={ dataMap }
                         dataLatLngNewMarker={ dataLatLng }
                     >
@@ -295,7 +332,9 @@ class App extends Component {
 
             <StyledContainerRight className="container-right">
                 <RestaurantContainer 
-                    restaurantAddedByUser={ this.renderRestaurant }
+                    restaurantAddedByUser={ renderNewRestaurants }
+                    getMinMaxValueSelect={ this.handleMinMaxValueSelect }
+
                 />
             </StyledContainerRight>
 

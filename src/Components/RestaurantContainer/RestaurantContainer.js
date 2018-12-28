@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-// Import librairies axios, react-stars, styled-components, prop-types
-import Axios from 'axios';
+// Import librairies react-stars, styled-components, prop-types
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
 //import PropTypes from 'prop-types';
@@ -9,7 +8,7 @@ import styled from 'styled-components';
 // Import des composants Filter, RestaurantItem, ViewForm
 import Filter from '../Filter/Filter';
 import RestaurantItem from '../RestaurantItem/RestaurantItem';
-import ViewForm from '../ViewForm/ViewForm';
+import ReviewForm from '../ReviewForm/ReviewForm';
 
 const StyledListRestaurants = styled.div`
     height: 60%;
@@ -21,29 +20,18 @@ class RestaurantContainer extends Component {
     constructor(props){
         super(props)
         this.state = {
-            restaurants: [],
             newrating: null,
-            isAddView: false,
-            newViews: [], 
-            minValue: 0,
-            maxValue: 0
+            isAddReview: false,
+            newReviews: [], 
+            minValue: 1,
+            maxValue: 5
         }
+        this.minValueSelect = this.minValueSelect.bind(this);
+        this.maxValueSelect = this.maxValueSelect.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
-        this.addView = this.addView.bind(this);
-        this.renderView = this.renderView.bind(this);
-    }
-
-    // Requête GET pour aller chercher data JSON
-    componentDidMount() {
-        Axios
-          .get('http://localhost:3000/data/restaurant.json')
-          .then(({ data }) => {
-            this.setState({ 
-                restaurants: data,
-            });
-        })
-        .catch( err => {} )
+        this.addReview = this.addReview.bind(this);
+        this.renderReview = this.renderReview.bind(this);
     }
 
     // Gestion des stars
@@ -54,53 +42,57 @@ class RestaurantContainer extends Component {
     }
 
     // Valeur du premier select
-    firstValueSelect = value => {
+    minValueSelect = value => {
         this.setState({
             minValue: value
-        });
+        }, 
+            () => this.props.getMinMaxValueSelect(this.state.minValue, this.state.maxValue)
+        );
     }
 
     // Valeur du second select
-    secondValueSelect = value => {
+    maxValueSelect = value => {
         this.setState({
             maxValue: value
-        });
+        }, 
+            () => this.props.getMinMaxValueSelect(this.state.minValue, this.state.maxValue)
+        );
     }
     
     // Ouverture du formulaire
     openModal = () => {
         this.setState({
-            isAddView: true
+            isAddReview: true
         });
     }
     
     // Fermeture du formulaire
     closeModal = () => {
         this.setState({
-            isAddView: false
+            isAddReview: false
         });
     }
 
     // Ajout d'un avis par le user
-    addView = (stars, commentTitle, comment) => {
-        const{ newViews } = this.state;
-        let tmpView = [];
-        tmpView.stars = stars;
-        tmpView.commentTitle = commentTitle;
-        tmpView.comment = comment;
+    addReview = (stars, commentTitle, comment) => {
+        const{ newReviews } = this.state;
+        let tmpReview = [];
+        tmpReview.stars = stars;
+        tmpReview.commentTitle = commentTitle;
+        tmpReview.comment = comment;
         this.setState({
-            isAddView : false, 
-            newViews : [...newViews, tmpView]
+            isAddReview : false, 
+            newReviews : [...newReviews, tmpReview]
         });
     }
     
     // Rendu d'un avis ajouté par le user
-    renderView = () => {
-        const { newViews } = this.state;
-        return newViews.map(({ stars, commentTitle, comment }) => {
+    renderReview = () => {
+        const { newReviews } = this.state;
+        return newReviews.map(({ stars, commentTitle, comment }) => {
             //console.log(id)
             return (
-                <div key={ stars }>
+                <Fragment key={ stars }>
                     <div className="stars-rating">
                         <ReactStars
                             count={ 5 }
@@ -109,24 +101,27 @@ class RestaurantContainer extends Component {
                             size={ 24 }
                             color1={ '#EFEEE7' }
                             color2={ '#ffd700' }
+                            half={ false }
+                            edit={ false }
                         />
                     </div>
                     <p className="commentary">
                         <span><strong>{ commentTitle }</strong></span>
                         { comment }
                     </p>
-                </div>
+                </Fragment>
             )
         });
     }
 
     // Filtrage des stars
+    /*
     intervalValue(number){
         if((this.state.minValue <= number) && (this.state.maxValue >= number)){
             return
         }
-
     }
+    */
     
     /*
     restaurantsList = () => {
@@ -156,9 +151,10 @@ class RestaurantContainer extends Component {
 
     render () {
         
+        /*
         const { restaurants, key } = this.state;
-
-        const restaurantsList = restaurants./*filter(this.intervalValue(ratings)).*/map(({ id, restaurantName, address, lat, lng, ratings }) => 
+        
+        const restaurantsList = restaurants.filter(this.intervalValue(ratings)).map(({ id, restaurantName, address, lat, lng, ratings }) => 
             
             <RestaurantItem 
                 key={ id }
@@ -172,27 +168,26 @@ class RestaurantContainer extends Component {
                 commentTitle={ ratings[0].commentTitle }
                 comment={ ratings[0].comment }
                 onOpen={ this.openModal }
-                restaurantAddedByUser
                 viewAddedByUser={ this.renderView }
             />
 
-        ); 
+        );
+        */ 
 
         return (
             <Fragment>
                 <h1>Perch'Advisor</h1>
                 <Filter 
-                    firstSelect={ this.firstValueSelect }
-                    secondValue={ this.secondValueSelect }
+                    minSelect={ this.minValueSelect }
+                    maxSelect={ this.maxValueSelect }
                 />
                 <StyledListRestaurants className="list-restaurants">
-                    { restaurantsList }
-                    { this.props.restaurantAddedByUser() }
+                    { this.props.restaurantAddedByUser }
                     { 
-                        this.state.isAddView ?
-                        <ViewForm 
+                        this.state.isAddReview ?
+                        <ReviewForm 
                             onClose={ this.closeModal }
-                            onAddView={ this.addView } 
+                            onAddReview={ this.addReview } 
                         />
                         : null 
                     }

@@ -209,6 +209,7 @@ class RestaurantForm extends Component {
                         size={ 24 }
                         color1={ '#EFEEE7' }
                         color2={ '#ffd700' }
+                        half={ false }
                     />
                     <input 
                         type="text" 
