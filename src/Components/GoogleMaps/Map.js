@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from 'react';
 
+// Import librairie prop-types
+import PropTypes from 'prop-types';
+
 // Import image
 import redMarker from '../../pictures/red-marker.png';
 import brownMarker from '../../pictures/brown-marker.png';
@@ -109,6 +112,7 @@ class Map extends Component {
         });
     }
 
+    // Ajout des restaurants via Google Places
     addRestaurants = results => {
         for(let i = 0; i < results.length; i++){
             this.service.getDetails(results[i], (result, status) => {
@@ -123,8 +127,7 @@ class Map extends Component {
     render() {
         
         return (
-            <Fragment>
-            </Fragment>
+            <Fragment></Fragment>
         )
     
     }
@@ -138,6 +141,13 @@ function loadScript(url) {
     script.async = true;
     script.defer = true;
     index.parentNode.insertBefore(script, index);
+}
+
+Map.propTypes = {
+    onOpen: PropTypes.func.isRequired, 
+    getMarker: PropTypes.func.isRequired,
+    getLatLng: PropTypes.func.isRequired,
+    getRestaurantsGooglePlaces: PropTypes.func.isRequired
 }
 
 export default Map;

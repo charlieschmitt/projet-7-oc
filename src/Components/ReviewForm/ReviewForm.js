@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 // Import librairies react-stars, styled-components, prop-types
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 const StyledBgForm = styled.div`
     width: 100%;
@@ -76,13 +76,13 @@ const StyledViewForm = styled.form`
             color: #858585;
         }
         &:hover, &:focus, &:active:focus {
-          color: #9A643D;
-          outline: none;
-          border-bottom: 1px solid #9A643D;
-          &::placeholder {
             color: #9A643D;
-            position: relative;
-            transform: translateY(-20px);
+            outline: none;
+            border-bottom: 1px solid #9A643D;
+            &::placeholder {
+                color: #9A643D;
+                position: relative;
+                transform: translateY(-20px);
           }
         }
     }
@@ -128,7 +128,8 @@ class ReviewForm extends Component {
             id: 0,
             stars: 0,
             commentTitle: '',
-            comment: ''
+            comment: '',
+            keyReview: this.props.getKey
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleNewRating = this.handleNewRating.bind(this);
@@ -146,17 +147,13 @@ class ReviewForm extends Component {
     }
     
     // Gestion des stars
-    handleNewRating = newrating => {
-        this.setState({
-            stars: newrating
-        });
-    }
+    handleNewRating = newrating => this.setState({ stars: newrating });
     
     // Envoie des props via le formulaire
     handleSubmit = event => {
         event.preventDefault();
-        const { id, stars, commentTitle, comment } = this.state;
-        this.props.onAddReview(id, stars, commentTitle, comment);
+        const { keyReview, stars, commentTitle, comment } = this.state;
+        this.props.onAddReview(keyReview, stars, commentTitle, comment);
     }
 
     render() {
@@ -203,6 +200,12 @@ class ReviewForm extends Component {
 
     }
 
+}
+
+ReviewForm.propTypes = {
+    onClose: PropTypes.func.isRequired, 
+    onAddReview: PropTypes.func.isRequired, 
+    getKey: PropTypes.number.isRequired
 }
 
 export default ReviewForm;

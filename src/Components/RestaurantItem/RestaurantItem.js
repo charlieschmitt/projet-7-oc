@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 // Import librairies react-stars, styled-components, prop-types
 import ReactStars from 'react-stars';
@@ -11,14 +11,20 @@ import topDesign from '../../pictures/top-design.png';
 const StyledRestaurantItem = styled.div`
     margin-bottom: 2.5rem;
     
-    .top-design--item{
+    .top-design--item {
         display: flex;
         justify-content: center;
         margin-bottom: 2.5rem;
     }
 
-    .restaurant-picture{
+    .restaurant-picture {
         margin-bottom: 1.5rem;
+    }
+
+    @media only screen and (max-width: 1350px) {
+        .restaurant-picture > img{
+            width: 500px;
+        }
     }
 `
 
@@ -26,11 +32,11 @@ const StyledTopInformation = styled.div`
     display: flex;
     margin-bottom: 2rem;
 
-    .restaurant-name{
+    .restaurant-name {
         font-size: 1.5rem;
     }
 
-    .restaurant-address{
+    .restaurant-address {
         justify-content: flex-end;
         display: flex;
         width: 100%;
@@ -89,14 +95,12 @@ class RestaurantItem extends Component {
     constructor(props){
         super(props)
         this.state = {
-            
+            keyItem: this.props.id
         }
     }
 
     // Gestion des stars
-    handleNewRating = newrating => {
-        console.log(newrating)
-    }
+    handleNewRating = newrating => this.setState({ newrating });
 
     render() { 
 
@@ -117,23 +121,57 @@ class RestaurantItem extends Component {
                 </div>
 
                 <StyledBottomInformation className="bottom-information">
-                    <div className="stars-rating">
-                        <ReactStars
-                            count={ 5 }
-                            value={ this.props.stars }
-                            onChange={ this.handleNewRating }
-                            size={ 24 }
-                            color1={ '#EFEEE7' }
-                            color2={ '#ffd700' }
-                        />
-                    </div>
-                    <p className="commentary">
-                        <span><strong>{ this.props.commentTitle }</strong></span>
-                        { this.props.comment }
-                    </p>
-                    { this.props.viewAddedByUser() }
+                {
+                    this.props.reviews === undefined 
+                    ? null
+                    : 
+                    this.props.reviews.slice(0, 2).map((review, i) => review.rating < this.props.minValue || review.rating > this.props.maxValue
+                        ? null
+                        :
+                        <Fragment key={ i }>
+                            <div className="stars-rating">
+                                <ReactStars
+                                    count={ 5 }
+                                    value={ review.rating }
+                                    size={ 24 }
+                                    color1={ '#EFEEE7' }
+                                    color2={ '#ffd700' }
+                                    half={ false }
+                                    edit={ false }
+                                />
+                            </div>
+                            <p className="commentary">
+                                <span><strong>{ review.author_name }</strong></span>
+                                { review.text }
+                            </p>
+                        </Fragment>
+                    )
+                }
+                {
+                    this.props.sendReview.map(review => review.rating < this.props.minValue || review.rating > this.props.maxValue || review.key !== this.props.id
+                    ? null
+                    :
+                        <Fragment key={ review.index }>
+                            <div className="stars-rating">
+                                <ReactStars
+                                    count={ 5 }
+                                    value={ review.rating }
+                                    size={ 24 }
+                                    color1={ '#EFEEE7' }
+                                    color2={ '#ffd700' }
+                                    half={ false }
+                                    edit={ false }
+                                />
+                             </div>
+                            <p className="commentary">
+                                <span><strong>{ review.author_name }</strong></span>
+                                { review.text }
+                            </p>
+                        </Fragment>
+                    )
+                }
                     <button 
-                        onClick={ () => this.props.onOpen() } 
+                        onClick={ () => this.props.onOpen(this.state.keyItem) } 
                     >
                         Ajouter un avis
                     </button>
@@ -150,9 +188,12 @@ RestaurantItem.propTypes = {
     restaurantName: PropTypes.string.isRequired, 
     address: PropTypes.string.isRequired, 
     streetViewImage: PropTypes.string.isRequired,
-    stars: PropTypes.number.isRequired,
-    commentTitle: PropTypes.string.isRequired, 
-    comment: PropTypes.string.isRequired
+    //reviews: PropTypes.arrayOf().isRequired, 
+    id: PropTypes.number.isRequired,
+    minValue: PropTypes.number.isRequired, 
+    maxValue: PropTypes.number.isRequired,
+    onOpen: PropTypes.func.isRequired,
+    //sendReview: PropTypes.arrayOf().isRequired
 }
 
 export default RestaurantItem;

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
-// Import librairies react-select, styled-components
+// Import librairies react-select, styled-components, prop-types
 import Select from 'react-select';
 import MakeAnimated from 'react-select/lib/animated';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyledFilter = styled.div`
     margin-bottom: 2.5rem;
@@ -81,21 +82,22 @@ class Filter extends Component {
         super(props)
         this.state = {
             isClearable: true,
-            selectedOptionOne: null, 
-            selectedOptionTwo: null
+            selectedOptionOne: 1, 
+            selectedOptionTwo: 5
         }
+        this.handleChangeOne = this.handleChangeOne.bind(this);
+        this.handleChangeTwo = this.handleChangeTwo.bind(this);
     }
   
     // Ouverture/fermeture du select
-    toggleClearable = () =>
-        this.setState(state => ({ isClearable: !state.isClearable }));
+    toggleClearable = () => this.setState(state => ({ isClearable: !state.isClearable }));
 
     // Manipulation du premier select
     handleChangeOne = selectedOptionOne => {
         this.setState({ 
             selectedOptionOne
         },
-            () => this.props.minSelect(selectedOptionOne.value) 
+            () => this.props.getMinValue(selectedOptionOne.value), console.log(selectedOptionOne)
         );
     }
     
@@ -104,47 +106,53 @@ class Filter extends Component {
         this.setState({ 
             selectedOptionTwo
         }, 
-            () => this.props.maxSelect(selectedOptionTwo.value) 
+            () => this.props.getMaxValue(selectedOptionTwo.value) 
         );
     }
   
-  render() {
+    render() {
     
-      const { selectedOptionOne, selectedOptionTwo, isClearable } = this.state;
+        const { selectedOptionOne, selectedOptionTwo, isClearable } = this.state;
 
-      return(
-        <StyledFilter className="filter-restaurants">
-          <p>Quel type d'établissement recherchez-vous ?</p>
-          <div>
+        return(
+            <StyledFilter className="filter-restaurants">
+                <p>Quel type d'établissement recherchez-vous ?</p>
+                <small>* Filtrer les résultats entre 1 et 5 étoiles</small>
+                <div>
 
-            <Select 
-                styles={ CUSTOM_STYLES }
-                options={ OPTIONS } 
-                value={ selectedOptionOne }
-                components={ MakeAnimated() }
-                isClearable={ isClearable }
-                placeholder="Choisissez un nombre d'étoiles"
-                defaultValue={ 1 }
-                onChange={ this.handleChangeOne }
-            />
+                    <Select 
+                        styles={ CUSTOM_STYLES }
+                        options={ OPTIONS } 
+                        value={ selectedOptionOne }
+                        components={ MakeAnimated() }
+                        isClearable={ isClearable }
+                        placeholder="1 étoile"
+                        defaultValue={ 1 }
+                        onChange={ this.handleChangeOne }
+                    />
 
-            <Select 
-                styles={ CUSTOM_STYLES }
-                options={ OPTIONS } 
-                value={ selectedOptionTwo }
-                components={ MakeAnimated() }
-                isClearable={ isClearable }
-                placeholder="Choisissez un nombre d'étoiles"
-                defaultValue={ 5 }
-                onChange={ this.handleChangeTwo }
-            />
+                    <Select 
+                        styles={ CUSTOM_STYLES }
+                        options={ OPTIONS } 
+                        value={ selectedOptionTwo }
+                        components={ MakeAnimated() }
+                        isClearable={ isClearable }
+                        placeholder="5 étoiles"
+                        defaultValue={ 5 }
+                        onChange={ this.handleChangeTwo }
+                    />
             
-          </div>
-        </StyledFilter>
-      )
+            </div>
+            </StyledFilter>
+        )
       
-  }
+    }
     
+}
+
+Filter.propTypes = {
+    getMinValue: PropTypes.func.isRequired, 
+    getMaxValue: PropTypes.func.isRequired,
 }
   
 export default Filter;

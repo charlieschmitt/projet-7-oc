@@ -1,9 +1,8 @@
 import React, { Component, Fragment } from 'react';
 
-// Import librairies react-stars, styled-components, prop-types
-import ReactStars from 'react-stars';
+// Import librairies styled-components, prop-types
 import styled from 'styled-components';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 // Import des composants Filter, RestaurantItem, ViewForm
 import Filter from '../Filter/Filter';
@@ -16,7 +15,7 @@ const StyledListRestaurants = styled.div`
 `
 
 class RestaurantContainer extends Component {
-
+    
     constructor(props){
         super(props)
         this.state = {
@@ -24,184 +23,89 @@ class RestaurantContainer extends Component {
             isAddReview: false,
             newReviews: [], 
             minValue: 1,
-            maxValue: 5
+            maxValue: 5, 
+            keyReview: ''
         }
         this.minValueSelect = this.minValueSelect.bind(this);
         this.maxValueSelect = this.maxValueSelect.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.addReview = this.addReview.bind(this);
-        this.renderReview = this.renderReview.bind(this);
     }
-
-    // Gestion des stars
-    handleNewRating = newrating => {
-        this.setState({
-            newrating
-        });
-    }
-
+    
     // Valeur du premier select
-    minValueSelect = value => {
-        this.setState({
-            minValue: value
-        }, 
-            () => this.props.getMinMaxValueSelect(this.state.minValue, this.state.maxValue)
-        );
-    }
-
+    minValueSelect = value => this.setState({ minValue: value });
+    
     // Valeur du second select
-    maxValueSelect = value => {
-        this.setState({
-            maxValue: value
-        }, 
-            () => this.props.getMinMaxValueSelect(this.state.minValue, this.state.maxValue)
-        );
-    }
+    maxValueSelect = value => this.setState({ maxValue: value });
     
     // Ouverture du formulaire
-    openModal = () => {
-        this.setState({
-            isAddReview: true
-        });
-    }
+    openModal = key => this.setState({ isAddReview: true, keyReview: key });
     
     // Fermeture du formulaire
-    closeModal = () => {
-        this.setState({
-            isAddReview: false
-        });
-    }
-
+    closeModal = () => this.setState({ isAddReview: false });
+    
     // Ajout d'un avis par le user
-    addReview = (stars, commentTitle, comment) => {
+    addReview = (keyReview, stars, commentTitle, comment) => {
         const{ newReviews } = this.state;
-        let tmpReview = [];
-        tmpReview.stars = stars;
-        tmpReview.commentTitle = commentTitle;
-        tmpReview.comment = comment;
+        let tmpReview = { key: keyReview, rating: stars, author_name: commentTitle, text: comment };
+        tmpReview.index = newReviews.length;
         this.setState({
             isAddReview : false, 
             newReviews : [...newReviews, tmpReview]
         });
     }
-    
-    // Rendu d'un avis ajouté par le user
-    renderReview = () => {
-        const { newReviews } = this.state;
-        return newReviews.map(({ stars, commentTitle, comment }) => {
-            //console.log(id)
-            return (
-                <Fragment key={ stars }>
-                    <div className="stars-rating">
-                        <ReactStars
-                            count={ 5 }
-                            value={ stars }
-                            onChange={ this.handleNewRating }
-                            size={ 24 }
-                            color1={ '#EFEEE7' }
-                            color2={ '#ffd700' }
-                            half={ false }
-                            edit={ false }
-                        />
-                    </div>
-                    <p className="commentary">
-                        <span><strong>{ commentTitle }</strong></span>
-                        { comment }
-                    </p>
-                </Fragment>
-            )
-        });
-    }
-
-    // Filtrage des stars
-    /*
-    intervalValue(number){
-        if((this.state.minValue <= number) && (this.state.maxValue >= number)){
-            return
-        }
-    }
-    */
-    
-    /*
-    restaurantsList = () => {
-
-        const { restaurants } = this.state;
-
-        restaurants.filter(this.intervalValue(ratings)).map(({ id, restaurantName, address, lat, lng, ratings }) => 
-
-            <RestaurantItem 
-                key={ id }
-                restaurantName={ restaurantName }
-                address={ address }
-                streetViewImage={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
-                                   &fov=90&heading=235&pitch=10
-                                   &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
-                stars={ ratings[0].stars }
-                commentTitle={ ratings[0].commentTitle }
-                comment={ ratings[0].comment }
-                onAddView={ this.openModal }
-                viewUser={ this.renderView }
-            /> 
         
-        );
-            
-    }
-    */
-
     render () {
-        
-        /*
-        const { restaurants, key } = this.state;
-        
-        const restaurantsList = restaurants.filter(this.intervalValue(ratings)).map(({ id, restaurantName, address, lat, lng, ratings }) => 
+
+        const restaurantList = this.props.restaurantAddedByGooglePlacesOrByUser.map(({ index, name, address, lat, lng, reviews }) => 
             
             <RestaurantItem 
-                key={ id }
-                id={ key }
-                restaurantName={ restaurantName }
+                key={ index }
+                id={ index }
+                restaurantName={ name }
                 address={ address }
                 streetViewImage={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
                                    &fov=90&heading=235&pitch=10
                                    &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
-                stars={ ratings[0].stars }
-                commentTitle={ ratings[0].commentTitle }
-                comment={ ratings[0].comment }
+                reviews={ reviews }
+                minValue={ this.state.minValue }
+                maxValue={ this.state.maxValue }
                 onOpen={ this.openModal }
-                viewAddedByUser={ this.renderView }
+                sendReview={ this.state.newReviews }
             />
 
         );
-        */ 
-
+            
         return (
             <Fragment>
-                <h1>Perch'Advisor</h1>
+                 <h1>Perch'Advisor</h1>
                 <Filter 
-                    minSelect={ this.minValueSelect }
-                    maxSelect={ this.maxValueSelect }
+                    getMinValue={ this.minValueSelect }
+                    getMaxValue={ this.maxValueSelect }
                 />
                 <StyledListRestaurants className="list-restaurants">
-                    { this.props.restaurantAddedByUser }
+                    { restaurantList }
                     { 
-                        this.state.isAddReview ?
-                        <ReviewForm 
-                            onClose={ this.closeModal }
-                            onAddReview={ this.addReview } 
-                        />
+                        this.state.isAddReview 
+                        ?
+                            <ReviewForm 
+                                onClose={ this.closeModal }
+                                onAddReview={ this.addReview } 
+                                getKey={ this.state.keyReview }
+                            />
                         : null 
                     }
                 </StyledListRestaurants>
             </Fragment>
         )
-
+                
     }
-}
 
-/*
+}
+        
 RestaurantContainer.propTypes = {
-
+    //restaurantAddedByGooglePlacesOrByUser: PropTypes.arrayOf().isRequired
 }
-*/
-
+        
 export default RestaurantContainer;

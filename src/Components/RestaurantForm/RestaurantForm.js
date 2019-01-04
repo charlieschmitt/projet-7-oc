@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 // Import librairies react-stars, styled-components, prop-types
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 // Import image
 import redMarker from '../../pictures/red-marker.png';
@@ -154,11 +154,7 @@ class RestaurantForm extends Component {
     }
     
     // Gestion des stars
-    handleNewRating = newrating => {
-        this.setState({
-            stars: newrating
-        });
-    }
+    handleNewRating = newrating => this.setState({ stars: newrating });
 
     // Envoie des props via le formulaire et activation du marker
     handleSubmit = event => {
@@ -238,10 +234,13 @@ class RestaurantForm extends Component {
 
 }
 
-/*
-RestaurantForm.propTypes = {
 
+RestaurantForm.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    onAddRestaurant: PropTypes.func.isRequired
+    // dataMapNewMarker: propTypes.number.isRequired,
+    // dataLatLngNewMarker: propTypes.
 }
-*/
+
 
 export default RestaurantForm;
