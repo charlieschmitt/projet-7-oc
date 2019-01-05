@@ -188,12 +188,10 @@ RestaurantItem.propTypes = {
     restaurantName: PropTypes.string.isRequired, 
     address: PropTypes.string.isRequired, 
     streetViewImage: PropTypes.string.isRequired,
-    //reviews: PropTypes.arrayOf().isRequired, 
     id: PropTypes.number.isRequired,
     minValue: PropTypes.number.isRequired, 
     maxValue: PropTypes.number.isRequired,
-    onOpen: PropTypes.func.isRequired,
-    //sendReview: PropTypes.arrayOf().isRequired
+    onOpen: PropTypes.func.isRequired
 }
 
 export default RestaurantItem;

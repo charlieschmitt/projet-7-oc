@@ -88,16 +88,13 @@ class Filter extends Component {
         this.handleChangeOne = this.handleChangeOne.bind(this);
         this.handleChangeTwo = this.handleChangeTwo.bind(this);
     }
-  
-    // Ouverture/fermeture du select
-    toggleClearable = () => this.setState(state => ({ isClearable: !state.isClearable }));
 
     // Manipulation du premier select
     handleChangeOne = selectedOptionOne => {
         this.setState({ 
             selectedOptionOne
         },
-            () => this.props.getMinValue(selectedOptionOne.value), console.log(selectedOptionOne)
+            () => this.props.getMinValue(selectedOptionOne === null ? selectedOptionOne.value = 1 : selectedOptionOne.value), console.log(selectedOptionOne.value)
         );
     }
     
@@ -106,7 +103,7 @@ class Filter extends Component {
         this.setState({ 
             selectedOptionTwo
         }, 
-            () => this.props.getMaxValue(selectedOptionTwo.value) 
+            () => this.props.getMaxValue(selectedOptionTwo === null ? selectedOptionTwo.value = 5 : selectedOptionTwo.value), console.log(selectedOptionTwo.value) 
         );
     }
   

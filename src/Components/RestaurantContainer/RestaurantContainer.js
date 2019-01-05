@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
-// Import librairies styled-components, prop-types
+// Import librairie styled-components
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 // Import des composants Filter, RestaurantItem, ViewForm
 import Filter from '../Filter/Filter';
@@ -102,10 +101,6 @@ class RestaurantContainer extends Component {
                 
     }
 
-}
-        
-RestaurantContainer.propTypes = {
-    //restaurantAddedByGooglePlacesOrByUser: PropTypes.arrayOf().isRequired
 }
         
 export default RestaurantContainer;
