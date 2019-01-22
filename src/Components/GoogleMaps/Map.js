@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import { Component } from 'react';
 
 // Import librairie prop-types
 import PropTypes from 'prop-types';
@@ -29,7 +29,7 @@ class Map extends Component {
     }
 
     // Obtention de la position exacte du user sur la map
-    showCurrentLocation = () => {
+    showCurrentLocation() {
         // API geolocalisation
         if(navigator.geolocation){
             // Récupérer les positions actuelles du user
@@ -48,12 +48,13 @@ class Map extends Component {
     }
     
     // Rendu de la map
-    renderMap = () => {
+    renderMap () {
         loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA&callback=initMap&libraries=places")
         window.initMap = this.initMap
     }
     
     // Initialisation de la map et des markers
+    // Arrow fx for binding
     initMap = () => {
         const { currentLating } = this.state;
 
@@ -79,7 +80,7 @@ class Map extends Component {
 
         // Ajout de nouveaux restaurants et de nouveaux avis
         this.service = new window.google.maps.places.PlacesService(this.map);
-        // Restaurant(s) à 5 kilomètres autour de ma position
+        // Restaurant(s) à 3 kilomètres autour de ma position
         this.service.nearbySearch({
             location: { lat: +currentLating.lat[0], lng: +currentLating.lng[0] },
             radius: 3000,
@@ -88,6 +89,7 @@ class Map extends Component {
     }
     
     // Envoie des restaurants à partir d'une zone de recherche
+    // Arrow fx for binding
     callback = (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             for (let i = 0; i < results.length; i++) {
@@ -98,6 +100,7 @@ class Map extends Component {
     }
     
     // Ajout d'un marker au click
+    // Arrow fx for binding
     addMarker = latLng => {
         const { allMarker } = this.state;
 
@@ -113,6 +116,7 @@ class Map extends Component {
     }
 
     // Ajout des restaurants via Google Places
+    // Arrow fx for binding
     addRestaurants = results => {
         for(let i = 0; i < results.length; i++){
             this.service.getDetails(results[i], (result, status) => {
@@ -125,11 +129,7 @@ class Map extends Component {
     }
 
     render() {
-        
-        return (
-            <Fragment></Fragment>
-        )
-    
+        return null;
     }
 
 }

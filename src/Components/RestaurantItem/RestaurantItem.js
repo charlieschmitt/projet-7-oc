@@ -100,6 +100,7 @@ class RestaurantItem extends Component {
     }
 
     // Gestion des stars
+    // Arrow fx for binding
     handleNewRating = newrating => this.setState({ newrating });
 
     render() { 
@@ -149,8 +150,8 @@ class RestaurantItem extends Component {
                 }
                 {
                     this.props.sendReview.map(review => review.rating < this.props.minValue || review.rating > this.props.maxValue || review.key !== this.props.id
-                    ? null
-                    :
+                        ? null
+                        :
                         <Fragment key={ review.index }>
                             <div className="stars-rating">
                                 <ReactStars
@@ -162,7 +163,7 @@ class RestaurantItem extends Component {
                                     half={ false }
                                     edit={ false }
                                 />
-                             </div>
+                            </div>
                             <p className="commentary">
                                 <span><strong>{ review.author_name }</strong></span>
                                 { review.text }

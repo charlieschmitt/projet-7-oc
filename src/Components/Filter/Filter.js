@@ -81,35 +81,34 @@ class Filter extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isClearable: true,
             selectedOptionOne: 1, 
             selectedOptionTwo: 5
         }
-        this.handleChangeOne = this.handleChangeOne.bind(this);
-        this.handleChangeTwo = this.handleChangeTwo.bind(this);
     }
 
     // Manipulation du premier select
+    // Arrow fx for binding
     handleChangeOne = selectedOptionOne => {
         this.setState({ 
-            selectedOptionOne
-        },
-            () => this.props.getMinValue(selectedOptionOne === null ? selectedOptionOne.value = 1 : selectedOptionOne.value), console.log(selectedOptionOne.value)
+            selectedOptionOne 
+        }, 
+            () => this.props.getMinValue(selectedOptionOne.value)
         );
     }
     
     // Manipulation du deuxième select
+    // Arrow fx for binding
     handleChangeTwo = selectedOptionTwo => {
         this.setState({ 
             selectedOptionTwo
         }, 
-            () => this.props.getMaxValue(selectedOptionTwo === null ? selectedOptionTwo.value = 5 : selectedOptionTwo.value), console.log(selectedOptionTwo.value) 
+            () => this.props.getMaxValue(selectedOptionTwo.value)
         );
     }
   
     render() {
     
-        const { selectedOptionOne, selectedOptionTwo, isClearable } = this.state;
+        const { selectedOptionOne, selectedOptionTwo } = this.state;
 
         return(
             <StyledFilter className="filter-restaurants">
@@ -122,7 +121,6 @@ class Filter extends Component {
                         options={ OPTIONS } 
                         value={ selectedOptionOne }
                         components={ MakeAnimated() }
-                        isClearable={ isClearable }
                         placeholder="1 étoile"
                         defaultValue={ 1 }
                         onChange={ this.handleChangeOne }
@@ -133,7 +131,6 @@ class Filter extends Component {
                         options={ OPTIONS } 
                         value={ selectedOptionTwo }
                         components={ MakeAnimated() }
-                        isClearable={ isClearable }
                         placeholder="5 étoiles"
                         defaultValue={ 5 }
                         onChange={ this.handleChangeTwo }

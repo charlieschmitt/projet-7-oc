@@ -23,6 +23,7 @@ const StyledApp = styled.div`
 
 const StyledContainerLeft = styled.div`
     grid-column: 1 / 2;
+
     > .perche-picture {
         height: 50%;
         filter: brightness(90%);
@@ -65,6 +66,7 @@ const StyledContainerLeft = styled.div`
 `
 
 const StyledContainerRight = styled.div`
+
     > * {
         color: #523A28;
     }
@@ -87,24 +89,22 @@ class App extends Component {
             dataMap: '',
             dataLatLng: ''
         };
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.handleLatLng = this.handleLatLng.bind(this);
-        this.addRestaurantByGooglePlaces = this.addRestaurantByGooglePlaces.bind(this);
-        this.addRestaurantByForm = this.addRestaurantByForm.bind(this);
-        this.infosMarker = this.infosMarker.bind(this);
     }
     
     // Ouverture du formulaire
+    // Arrow fx for binding
     openModal = () => this.setState({ isAddRestaurant: true });
     
     // Fermeture du formulaire
+    // Arrow fx for binding
     closeModal = () => this.setState({ isAddRestaurant: false });
     
     // Manipulation / mis à jour de la latitude et la longitude des restaurants googlePlaces et restaurantForm
+    // Arrow fx for binding
     handleLatLng = (lat, lng) => this.setState({ dataNewLat: lat, dataNewLng: lng });
     
     // Restaurants ajoutés via Google Places
+    // Arrow fx for binding
     addRestaurantByGooglePlaces = (index, name, address, reviews) => {
         const { newRestaurants, dataNewLat, dataNewLng } = this.state;
         let tmpRestaurant = [];
@@ -120,6 +120,7 @@ class App extends Component {
     }
     
     // Ajout d'un restaurant par le user
+    // Arrow fx for binding
     addRestaurantByForm = (name, address, stars, commentTitle, comment) => {
         const { newRestaurants, dataNewLat, dataNewLng } = this.state;
         let tmpRestaurant = [];
@@ -136,6 +137,7 @@ class App extends Component {
     }
     
     // Obtention des infos concernant le marker à ajouter
+    // Arrow fx for binding
     infosMarker = (map, latLng) => this.setState({ dataMap: map, dataLatLng: latLng });
 
     render () {
@@ -173,7 +175,6 @@ class App extends Component {
                 <StyledContainerRight className="container-right">
                     <RestaurantContainer 
                         restaurantAddedByGooglePlacesOrByUser={ newRestaurants }
-
                     />
                 </StyledContainerRight>
 

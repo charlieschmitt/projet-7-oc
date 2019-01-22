@@ -22,7 +22,7 @@ const StyledBgForm = styled.div`
     }
 `
 
-const StyledViewForm = styled.form`
+const StyledReviewForm = styled.form`
     position: fixed;
     top: 50%;
     left: 50%;
@@ -131,12 +131,10 @@ class ReviewForm extends Component {
             comment: '',
             keyReview: this.props.getKey
         }
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleNewRating = this.handleNewRating.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
     
     // Manipulation des inputs du formulaire
+    // Arrow fx for binding
     handleInputChange = event => {
         const target = event.target;
         const value = target.value;
@@ -147,9 +145,11 @@ class ReviewForm extends Component {
     }
     
     // Gestion des stars
+    // Arrow fx for binding
     handleNewRating = newrating => this.setState({ stars: newrating });
     
     // Envoie des props via le formulaire
+    // Arrow fx for binding
     handleSubmit = event => {
         event.preventDefault();
         const { keyReview, stars, commentTitle, comment } = this.state;
@@ -163,7 +163,7 @@ class ReviewForm extends Component {
         return (
             <StyledBgForm>
                 <div className="blur"></div>
-                <StyledViewForm>
+                <StyledReviewForm>
                     <p onClick={this.props.onClose} className="close">x</p>
                     <h2>Ajouter un avis</h2>
                     <ReactStars
@@ -194,7 +194,7 @@ class ReviewForm extends Component {
                     >
                         Envoyer
                     </button>
-                </StyledViewForm>
+                </StyledReviewForm>
             </StyledBgForm>
         )
 
