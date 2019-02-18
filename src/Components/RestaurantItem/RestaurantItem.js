@@ -108,7 +108,7 @@ class RestaurantItem extends Component {
     constructor(props){
         super(props)
         this.state = {
-            keyItem: this.props.id
+            keyItem: this.props.id,
         }
     }
 
