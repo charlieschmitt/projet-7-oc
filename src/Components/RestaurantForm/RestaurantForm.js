@@ -136,7 +136,7 @@ class RestaurantForm extends Component {
             address: '', 
             stars: 0,
             commentTitle: '',
-            comment: ''
+            comment: '',
         }
     }
     
