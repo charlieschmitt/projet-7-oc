@@ -80,7 +80,7 @@ class Map extends Component {
         // Restaurant(s) à 3 kilomètres autour de ma position
         this.service.nearbySearch({
             location: { lat: +currentLating.lat[0], lng: +currentLating.lng[0] },
-            radius: 3000,
+            radius: 3500,
             type: ['restaurant']
         }, this.callback);
     }
