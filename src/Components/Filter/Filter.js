@@ -67,7 +67,7 @@ const CUSTOM_STYLES = {
         ...provided,
         backgroundColor: '#ffffff',
         color: '#9A643D',
-        ':hover': {
+        ':hover' : {
             color: '#523A28', 
             fontWeight: 'bold',
             fontSize: '1.1rem'
