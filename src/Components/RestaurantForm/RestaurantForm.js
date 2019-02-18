@@ -160,7 +160,7 @@ class RestaurantForm extends Component {
     handleSubmit = event => {
         const { name, address, stars, commentTitle, comment } = this.state;
         event.preventDefault();
-        this.props.onAddRestaurant(name, address, stars, commentTitle, comment);
+        this.props.onAddRestaurant(name, address, stars, commentTitle, comment, this.props.dataMapNewMarker);
         this.newMarker(this.props.dataMapNewMarker, this.props.dataLatLngNewMarker); 
     }
     
@@ -170,8 +170,10 @@ class RestaurantForm extends Component {
         this.newMarker = new window.google.maps.Marker({
             map: map,
             position: latLng,
-            icon: redMarker
+            icon: redMarker, 
+            index: this.props.dataIndexMarker
         });
+        this.props.getMarker(this.newMarker);
     }
     
     render() {

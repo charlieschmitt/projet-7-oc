@@ -154,6 +154,7 @@ class ReviewForm extends Component {
         event.preventDefault();
         const { keyReview, stars, commentTitle, comment } = this.state;
         this.props.onAddReview(keyReview, stars, commentTitle, comment);
+        //this.props.getStars(keyReview, stars)
     }
 
     render() {

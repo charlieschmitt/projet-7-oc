@@ -4,7 +4,6 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Import image
-import redMarker from '../../pictures/red-marker.png';
 import brownMarker from '../../pictures/brown-marker.png';
 
 class Map extends Component {
@@ -16,12 +15,10 @@ class Map extends Component {
                 lat: [], 
                 lng: []
             },
-            allMarker: ''
         }
         this.map = '';
         this.marker = '';
         this.service = '';
-        this.newMarker = '';
     }
 
     componentDidMount() {
@@ -48,7 +45,7 @@ class Map extends Component {
     }
     
     // Rendu de la map
-    renderMap () {
+    renderMap() {
         loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA&callback=initMap&libraries=places")
         window.initMap = this.initMap
     }
@@ -73,9 +70,9 @@ class Map extends Component {
         
         // Mise en place du click sur la map
         this.map.addListener('click', e => {
-            this.props.getLatLng(e.latLng.lat(), e.latLng.lng());
             this.props.onOpen();
-            this.props.getMarker(this.map, e.latLng);
+            this.props.getLatLngClick(e.latLng.lat(), e.latLng.lng());
+            this.props.getMarkerClick(this.map, e.latLng);
         });
 
         // Ajout de nouveaux restaurants et de nouveaux avis
@@ -92,27 +89,8 @@ class Map extends Component {
     // Arrow fx for binding
     callback = (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            for (let i = 0; i < results.length; i++) {
-                this.addMarker(results[i].geometry.location);
-            }
             this.addRestaurants(results);
         }
-    }
-    
-    // Ajout d'un marker au click
-    // Arrow fx for binding
-    addMarker = latLng => {
-        const { allMarker } = this.state;
-
-        this.newMarker = new window.google.maps.Marker({
-            map: this.map,
-            position: latLng,
-            icon: redMarker
-        });
-
-        this.setState({
-            allMarker: [...allMarker, this.newMarker]
-        });
     }
 
     // Ajout des restaurants via Google Places
@@ -121,8 +99,8 @@ class Map extends Component {
         for(let i = 0; i < results.length; i++){
             this.service.getDetails(results[i], (result, status) => {
                 if(status === window.google.maps.places.PlacesServiceStatus.OK) {
-                    this.props.getLatLng(result.geometry.location.lat(), result.geometry.location.lng());
-                    this.props.getRestaurantsGooglePlaces(i, result.name, result.vicinity, result.reviews);
+                    this.props.getInfosMarker(i, this.map, result.geometry.location);
+                    this.props.getRestaurantsGooglePlaces(i, result.name, this.map, result.geometry.location, result.geometry.location.lat(), result.geometry.location.lng(), result.vicinity, result.rating, result.reviews);
                 }
             });
         }
@@ -145,9 +123,10 @@ function loadScript(url) {
 
 Map.propTypes = {
     onOpen: PropTypes.func.isRequired, 
-    getMarker: PropTypes.func.isRequired,
-    getLatLng: PropTypes.func.isRequired,
-    getRestaurantsGooglePlaces: PropTypes.func.isRequired
+    getMarkerClick: PropTypes.func.isRequired,
+    getLatLngClick: PropTypes.func.isRequired,
+    getRestaurantsGooglePlaces: PropTypes.func.isRequired,
+    getInfosMarker: PropTypes.func.isRequired
 }
 
 export default Map;

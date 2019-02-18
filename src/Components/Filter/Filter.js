@@ -39,6 +39,7 @@ const StyledFilter = styled.div`
 
 // Création des options des select
 const OPTIONS = [
+    { value: 0, label: '0 étoile' },
     { value: 1, label: '1 étoile' },
     { value: 2, label: '2 étoiles' },
     { value: 3, label: '3 étoiles' },
@@ -81,7 +82,7 @@ class Filter extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            selectedOptionOne: 1, 
+            selectedOptionOne: 0, 
             selectedOptionTwo: 5
         }
     }
@@ -121,7 +122,7 @@ class Filter extends Component {
                         options={ OPTIONS } 
                         value={ selectedOptionOne }
                         components={ MakeAnimated() }
-                        placeholder="1 étoile"
+                        placeholder="0 étoile"
                         defaultValue={ 1 }
                         onChange={ this.handleChangeOne }
                     />

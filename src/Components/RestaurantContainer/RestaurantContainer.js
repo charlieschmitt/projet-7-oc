@@ -19,20 +19,32 @@ class RestaurantContainer extends Component {
         super(props)
         this.state = {
             isAddReview: false,
-            newReviews: [], 
-            minValue: 1,
+            minValue: 0,
             maxValue: 5, 
-            keyReview: ''
+            keyReview: '',
+            restaurants : this.props.restaurantAddedByGooglePlacesOrByUser
         }
     }
     
     // Valeur du premier select
     // Arrow fx for binding
-    minValueSelect = value => this.setState({ minValue: value });
+    minValueSelect = value => {
+        this.setState({ 
+            minValue: value 
+        }, 
+            () => this.props.getMinValueSelect(this.state.minValue)
+        );
+    }
     
     // Valeur du second select
     // Arrow fx for binding
-    maxValueSelect = value => this.setState({ maxValue: value });
+    maxValueSelect = value => {
+        this.setState({ 
+            maxValue: value 
+        }, 
+            () => this.props.getMaxValueSelect(this.state.maxValue)
+        );
+    }
     
     // Ouverture du formulaire
     // Arrow fx for binding
@@ -45,18 +57,50 @@ class RestaurantContainer extends Component {
     // Ajout d'un avis par le user
     // Arrow fx for binding
     addReview = (keyReview, stars, commentTitle, comment) => {
-        const{ newReviews } = this.state;
-        let tmpReview = { key: keyReview, rating: stars, author_name: commentTitle, text: comment };
-        tmpReview.index = newReviews.length;
+
+        this.props.restaurantAddedByGooglePlacesOrByUser.map(restaurant => {
+            if(keyReview === restaurant.index) {
+                let tmpReview = { key: keyReview, rating: stars, author_name: commentTitle, text: comment };
+                restaurant.reviews === undefined && (restaurant.reviews = []);
+                restaurant.reviews.splice(0, 0, tmpReview)
+                this.setState({
+                    isAddReview : false
+                }, 
+                    () => this.averageRating(keyReview)
+                );
+            }
+            else {
+                return null;
+            }
+        });
+
+    }
+
+    // Moyenne de la note globale
+    // Arrow fx for binding
+    averageRating = (keyReview) => {
+        this.props.restaurantAddedByGooglePlacesOrByUser.map(restaurant => {
+            if(keyReview === restaurant.index) {
+                let average = [];
+                restaurant.reviews.map(review => average.push(review.rating));
+                let amount = 0;
+                for(let i = 0; i < average.length; i++) {
+                    amount = amount + average[i]
+                }
+                restaurant.rating = Math.round(amount / average.length);
+            }
+            else {
+                return null;
+            }
+        });
         this.setState({
-            isAddReview : false, 
-            newReviews : [...newReviews, tmpReview]
+            restaurants: this.props.restaurantAddedByGooglePlacesOrByUser
         });
     }
         
     render () {
 
-        const restaurantList = this.props.restaurantAddedByGooglePlacesOrByUser.map(({ index, name, address, lat, lng, reviews }) => 
+        const restaurantList = this.props.restaurantAddedByGooglePlacesOrByUser.map(({ index, name, address, lat, lng, rating, reviews, location }) => 
             
             <RestaurantItem 
                 key={ index }
@@ -66,11 +110,12 @@ class RestaurantContainer extends Component {
                 streetViewImage={ `https://maps.googleapis.com/maps/api/streetview?size=700x250&location=${lat},${lng}
                                    &fov=90&heading=235&pitch=10
                                    &key=AIzaSyCO_5DP0c2nkvFhOGG9EwyAUIo4ebiW2qA` }
+                rating={ rating }
                 reviews={ reviews }
                 minValue={ this.state.minValue }
                 maxValue={ this.state.maxValue }
                 onOpen={ this.openModal }
-                sendReview={ this.state.newReviews }
+                location={ location }
             />
 
         );
