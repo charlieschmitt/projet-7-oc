@@ -61,7 +61,7 @@ class RestaurantContainer extends Component {
         this.props.restaurantAddedByGooglePlacesOrByUser.map(restaurant => {
             if(keyReview === restaurant.index) {
                 let tmpReview = { key: keyReview, rating: stars, author_name: commentTitle, text: comment };
-                restaurant.reviews === undefined && (restaurant.reviews = []);
+                restaurant.reviews === undefined && ( restaurant.reviews = [] );
                 restaurant.reviews.splice(0, 0, tmpReview)
                 this.setState({
                     isAddReview : false
